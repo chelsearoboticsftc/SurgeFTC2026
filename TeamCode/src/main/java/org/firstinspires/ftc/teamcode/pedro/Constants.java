@@ -61,5 +61,12 @@ public class Constants {public static MecanumConfig drivetrainConfig = new Mecan
                 c.naturalStrafeDeceleration.set(89.73017348540341);
             }
     );
+    public static Follower create(HardwareMap h) {
+        return new Follower(
+                new PinpointLocalizer(h, localizerConfig),
+                new Mecanum(h, drivetrainConfig),
+                new Foresight(foresightConfig)
+        );
+    }
 
 }
