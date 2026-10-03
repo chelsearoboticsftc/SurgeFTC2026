@@ -53,7 +53,7 @@ public class SampleSubsystem {
 
     }
     /* Standard functions.  All Chelsea Robotics subsystems shall have init() and update() these  *
-     * methods defined. Leave empty if not needed!                                                */
+     * methods defined. Leaqve empty if not needed!                                                */
     public void init(){
         /* Call this method at the start of your opmode logic once to execute any logic you       *
          * want to be called on initialization. If none, leave empty!                             */
