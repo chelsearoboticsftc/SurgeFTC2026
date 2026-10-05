@@ -15,6 +15,20 @@ public class shooter {
     private double setmotorpower = 1;
     public shooter(HardwareMap HardwareMap){
 
+        this.shooterMotor = hardwareMap.get(DcMotorEx.class,"shooterMotor");
+
+        shooterMotor.setZeroPowerBehavior(SampleSubsystemConstants.MOTOR_NAME_ZERO_POWER_BEHAVIOR);
+
+        shooterMotor.setDirection(SampleSubsystemConstants.MOTOR_NAME_DIRECTION);
+
+        shooterMotor.setVelocityPIDFCoefficients(
+
+                SampleSubsystemConstants.MOTOR_NAME_VELOCITY_P,
+                SampleSubsystemConstants.MOTOR_NAME_VELOCITY_I,
+                SampleSubsystemConstants.MOTOR_NAME_VELOCITY_D,
+                SampleSubsystemConstants.MOTOR_NAME_VELOCITY_F);
+    }    public void init(){
+
     }
     public void GateToggle() {
         if (!GateToggleVar) {
