@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
 
-    //Declare HW objects here
+    //Declare HW objets here
 
     //Example declare a DcMotorEx object as part of this class called 'motorName'
     DcMotorEx intake;

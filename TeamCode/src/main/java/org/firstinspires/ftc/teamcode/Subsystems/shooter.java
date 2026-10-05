@@ -8,3 +8,4 @@ public class shooter {
     private int shooterpower = 0;
     private double variable = 0;
 }
+//made by zach :)

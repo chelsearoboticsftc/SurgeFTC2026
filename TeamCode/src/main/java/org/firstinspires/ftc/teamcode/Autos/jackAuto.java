@@ -20,7 +20,7 @@ public class jackAuto extends OpMode {
     private Follower follower;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose thetrashpathisZachspath = poseFactory.of(56, 8, 90);
+    private final Pose ourpathsareequal = poseFactory.of(56, 8, 90);
     private final Pose path1 = poseFactory.of(56, 36, 180);
     private final Pose point2 = poseFactory.of(11.9212, 43.3117, 170.5816);
     private final Pose point3 = poseFactory.of(7.2564, 99.808, 94.7201);
@@ -34,7 +34,7 @@ public class jackAuto extends OpMode {
     private final Pose point11 = poseFactory.of(86.5586, 108.1011, 68.8059);
 
     public Path path1() {
-        return line(thetrashpathisZachspath, path1).linear(thetrashpathisZachspath, path1);
+        return line(ourpathsareequal, path1).linear(ourpathsareequal, path1);
     }
 
     public Path path2() {
@@ -60,7 +60,6 @@ public class jackAuto extends OpMode {
     public Path path7() {
         return line(point6, point7).tangent();
     }
-
     public Path path8() {
         return line(point7, point8).tangent();
     }
@@ -72,7 +71,7 @@ public class jackAuto extends OpMode {
     public Path path10() {
         return line(point9, point10).tangent();
     }
-
+//
     public Path path11() {
         return line(point10, point11).tangent();
     }
@@ -98,7 +97,7 @@ public class jackAuto extends OpMode {
     public void init() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
-        follower.setPose(thetrashpathisZachspath);//sets the starting point of your Robot
+        follower.setPose(ourpathsareequal);//sets the starting point of your Robot
         follower.update();
     }
     @Override
