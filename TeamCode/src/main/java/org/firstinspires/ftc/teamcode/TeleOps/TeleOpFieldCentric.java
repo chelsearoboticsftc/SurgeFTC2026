@@ -47,6 +47,7 @@ public class TeleOpFieldCentric extends OpMode {
         }
         if (gamepad2.right_trigger_pressed){
 
+            intake.intakeToggle();
         }
 
         follower.manual(powers);
