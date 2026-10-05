@@ -6,21 +6,5 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class shooter {
     DcMotorEx shooter;
     private int shooterpower = 0;
-    private double  = 0;
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
+    private double variable = 0;
 }
