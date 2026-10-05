@@ -46,6 +46,7 @@ public class BenAuto extends OpMode {
         return sequential(
                 follow(follower,path1()),
                 follow(follower,path2()),
+                follow(follower,path3()),
                 follow(follower,path4())
 
                 // Add mechanism commands here.
