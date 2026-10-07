@@ -12,7 +12,7 @@ public class shooter {
     private int GateUp = 90;
     private int GateDown = 0;
     private boolean GateToggleVar = false;
-    private double setmotorpower = 1;
+    private double MotorSetPower = 1;
     public shooter(HardwareMap hardwareMap){
 
         this.shooterMotor = hardwareMap.get(DcMotorEx.class,"shooterMotor");
