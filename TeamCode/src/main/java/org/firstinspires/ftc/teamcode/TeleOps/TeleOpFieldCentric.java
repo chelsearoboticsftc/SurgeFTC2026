@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.shooterConstants;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
@@ -13,6 +15,7 @@ import com.pedropathing.follower.ManualDrive;
 @TeleOp(name = "Field Cenric TeleOp")
 public class TeleOpFieldCentric extends OpMode {
     private Intake intake;
+    private shooter shooter;
 
     private Follower follower;
     @Override
@@ -61,7 +64,11 @@ public class TeleOpFieldCentric extends OpMode {
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
 
+        //ServoGate Test
+        if (gamepad2.aWasPressed()) {
+            shooter.GateToggle();
+        }
+
     }
 
-}
 }

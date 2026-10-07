@@ -4,7 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class shooterConstants {
-    //Add subsystem constants here.  Use this to avoid magic numbers
+    //Add subsystem constants here.  Use this to avoid magic
+    public static final int GateUp = 90;
+    public static final int GateDown = 0;
+    public static boolean GateToggleVar = false;
     public static final int MOTOR_NAME_THRESHOLD = 5;
     public static final DcMotor.ZeroPowerBehavior MOTOR_NAME_ZERO_POWER_BEHAVIOR = DcMotor.ZeroPowerBehavior.BRAKE;
     public static final DcMotorSimple.Direction MOTOR_NAME_DIRECTION = DcMotorSimple.Direction.REVERSE;
@@ -17,4 +20,8 @@ public class shooterConstants {
     public static final int MOTOR_NAME_A_POSITION = 500;
     public static final int MOTOR_NAME_B_POSITION = 1000;
     public static double MOTOR_NAME_POSITION_P = 5.0;
+
+    public static void GateToggleVar() {
+
+    }
 }
