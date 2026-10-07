@@ -45,6 +45,14 @@ public class TeleOpFieldCentric extends OpMode {
         else {
             intake.setIndexPower(0);
         }
+        if (gamepad2.right_trigger_pressed){
+            
+        }
+
+
+        if (gamepad1.yWasPressed()) {
+            intake.intakeToggle();
+        }
 
         follower.manual(powers);
         follower.update();
@@ -55,4 +63,5 @@ public class TeleOpFieldCentric extends OpMode {
 
     }
 
+}
 }
