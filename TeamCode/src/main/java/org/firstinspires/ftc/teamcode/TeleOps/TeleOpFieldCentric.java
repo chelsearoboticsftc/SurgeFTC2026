@@ -33,7 +33,7 @@ public class TeleOpFieldCentric extends OpMode {
                 gamepad1.right_stick_x,
                 follower.pose().heading()
         );
-        if (gamepad1.right_trigger > 0){
+        if (gamepad1.right_trigger > 0) {
             intake.setMotorPower(1);
         }
         else {
@@ -45,10 +45,16 @@ public class TeleOpFieldCentric extends OpMode {
         else {
             intake.setIndexPower(0);
         }
+<<<<<<< Updated upstream
         if (gamepad2.right_trigger_pressed){
             
         }
 
+=======
+        if (gamepad2.right_trigger_pressed) {
+            //shooter stinky D:D
+          }
+>>>>>>> Stashed changes
 
         if (gamepad1.yWasPressed()) {
             intake.intakeToggle();
@@ -63,5 +69,4 @@ public class TeleOpFieldCentric extends OpMode {
 
     }
 
-}
 }
