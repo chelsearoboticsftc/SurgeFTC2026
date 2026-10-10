@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
@@ -13,6 +14,7 @@ import com.pedropathing.follower.ManualDrive;
 @TeleOp(name = "Field Cenric TeleOp")
 public class TeleOpFieldCentric extends OpMode {
     private Intake intake;
+    private shooter shooter;
 
     private Follower follower;
     @Override
@@ -24,6 +26,7 @@ public class TeleOpFieldCentric extends OpMode {
     public void init() {
         follower = Constants.create(hardwareMap);
         intake = new Intake(hardwareMap);
+        shooter = new shooter(hardwareMap);
     }
     @Override
     public void loop() {
@@ -33,7 +36,7 @@ public class TeleOpFieldCentric extends OpMode {
                 gamepad1.right_stick_x,
                 follower.pose().heading()
         );
-        if (gamepad1.right_trigger > 0){
+        if (gamepad1.left_trigger > 0){
             intake.setMotorPower(1);
         }
         else {
@@ -45,13 +48,22 @@ public class TeleOpFieldCentric extends OpMode {
         else {
             intake.setIndexPower(0);
         }
-        if (gamepad2.right_trigger_pressed){
-            
+        if (gamepad1.right_trigger > 0){
+            shooter.SetShooterVelocity(1000);
+        }
+        else {
+            shooter.SetShooterVelocity(0);
         }
 
 
         if (gamepad1.yWasPressed()) {
             intake.intakeToggle();
+        }
+        if (gamepad1.b) {
+            shooter.GateToggleDown();
+        }
+        else {
+            shooter.GateToggleUp();
         }
 
         follower.manual(powers);
