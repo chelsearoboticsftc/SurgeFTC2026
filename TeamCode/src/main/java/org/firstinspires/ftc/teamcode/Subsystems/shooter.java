@@ -12,13 +12,13 @@ public class shooter {
     DcMotorEx shooterMotor;
     Servo gateServo;
 
-    private int GateUp = 90;
-    private int GateDown = 0;
-    private boolean GateToggleVar = false;
+    private double GateUp = shooterConstants.GateUp;
+    private int GateDown = shooterConstants.GateDown;
     private double MotorSetPower = 1;
     public shooter(HardwareMap hardwareMap) {
 
         this.shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
+        this.gateServo = hardwareMap.get(Servo.class,"gateServo");
 
         shooterMotor.setZeroPowerBehavior(shooterConstants.SHOOTER_MOTOR_ZERO_POWER_BEHAVIOR);
 
@@ -38,14 +38,10 @@ public class shooter {
        public void init(){
 
     }
-    public void GateToggle() {
-        if (!GateToggleVar) {
-            gateServo.setPosition(GateDown);
-            GateToggleVar = true;
-        }
-        else {
-            gateServo.setPosition(GateUp);
-            GateToggleVar = false;
-        }
+    public void GateToggleDown() {
+        gateServo.setPosition(GateDown);
+    }
+    public void GateToggleUp() {
+        gateServo.setPosition(GateUp);
     }
 }
