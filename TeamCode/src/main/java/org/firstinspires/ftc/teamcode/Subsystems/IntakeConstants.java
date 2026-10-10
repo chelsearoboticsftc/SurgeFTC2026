@@ -11,7 +11,9 @@ public class IntakeConstants {
     public static final DcMotorSimple.Direction INTAKE_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static final DcMotor.ZeroPowerBehavior INDEX_ZERO_POWER_BEHAVIOR = DcMotor.ZeroPowerBehavior.BRAKE;
     public static final DcMotorSimple.Direction INDEX_DIRECTION = DcMotorSimple.Direction.FORWARD;
-
+    public static final double intakeUp = 0.25;
+    public static final double intakeDown = 0;
+    public static boolean intakeToggleVar = false;
     public static class SampleSubsystem {
 
         //Declare HW objects here

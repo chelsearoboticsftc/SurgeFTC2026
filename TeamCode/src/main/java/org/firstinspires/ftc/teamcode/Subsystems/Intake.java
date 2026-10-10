@@ -18,9 +18,9 @@ public class Intake {
 
     //private int intakeSetPosition = 0;
     //private double intakePower = 0;
-    private int intakeDown = 0;
-    private int intakeUp = 90;
-    private boolean intakeToggleVar = false;
+    public double intakeUp = IntakeConstants.intakeUp;
+    public double intakeDown = IntakeConstants.intakeDown;
+    public boolean intakeToggleVar = IntakeConstants.intakeToggleVar;
 
     public Intake(HardwareMap hardwareMap) {
         this.intake = hardwareMap.get(DcMotorEx.class, "intakeMotor");
