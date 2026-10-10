@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.TeleOps;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.drivetrain.DrivePowers;
@@ -19,21 +15,18 @@ import com.pedropathing.follower.ManualDrive;
 public class TeleOpFieldCentric extends OpMode {
     private Intake intake;
     private shooter shooter;
-    private Limelight limelight;
 
     private Follower follower;
     @Override
     public void start(){
         follower.setPose(OpModeStorage.autonomousEndPose);
         follower.update();
-        limelight.start();
     }
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
         intake = new Intake(hardwareMap);
         shooter = new shooter(hardwareMap);
-        limelight = new Limelight(hardwareMap,telemetry);
     }
     @Override
     public void loop() {
@@ -75,12 +68,10 @@ public class TeleOpFieldCentric extends OpMode {
 
         follower.manual(powers);
         follower.update();
-        limelight.update();
         Pose robotPose = follower.pose(); // returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
-        telemetry.update();
 
     }
 
