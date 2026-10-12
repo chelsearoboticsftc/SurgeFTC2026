@@ -53,7 +53,9 @@ public class RedFar extends OpMode {
         return Paths.line(point4, point5).linear(point4, point5);
     }    private Command autoRoutine() {
         return sequential(
+                waitMs(6000),
                 follow(follower,path1()),
+                waitMs(100),
                 follow(follower,path2()),
                 instant(()->Shooter.GateToggleDown()),
                 waitMs(100),
@@ -62,7 +64,9 @@ public class RedFar extends OpMode {
                 instant(()->Shooter.SetShooterVelocity(0)),
                 instant(()->Shooter.GateToggleUp()),
                 follow(follower,path3()),
+                waitMs(100),
                 follow(follower,path4()),
+                waitMs(100),
                 follow(follower,path5())
         );
     }
