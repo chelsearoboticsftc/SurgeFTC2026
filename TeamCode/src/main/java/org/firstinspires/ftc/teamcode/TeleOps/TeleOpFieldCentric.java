@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.Flower;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
@@ -17,6 +18,7 @@ public class TeleOpFieldCentric extends OpMode {
     private Intake intake;
     private shooter shooter;
     private Limelight limelight;
+    private Flower flower;
 
     private Follower follower;
     @Override
@@ -30,7 +32,7 @@ public class TeleOpFieldCentric extends OpMode {
         intake = new Intake(hardwareMap);
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
-
+        flower = new Flower(hardwareMap);
     }
     @Override
     public void loop() {
@@ -68,6 +70,21 @@ public class TeleOpFieldCentric extends OpMode {
         }
         else {
             shooter.GateToggleUp();
+        }
+        if (gamepad1.aWasPressed()) {
+            flower.flowerToggle();
+        }
+        if (gamepad1.xWasPressed()) {
+            flower.flowerToggle2();
+        }
+        if (gamepad1.dpad_up) {
+            flower.resetFlower1();
+        }
+        if (gamepad1.dpad_right) {
+            flower.resetFlower2();
+        }
+        if (gamepad1.dpad_down) {
+            intake.intakeServoReset();
         }
 
         limelight.update();

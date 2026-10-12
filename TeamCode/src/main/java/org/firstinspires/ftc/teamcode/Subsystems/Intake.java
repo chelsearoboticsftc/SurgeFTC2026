@@ -51,4 +51,9 @@ public class Intake {
             intakeToggleVar = false;
         }
     }
+    public void intakeServoReset() {
+        intakeServo.setPosition(0);
+        intakeServo2.setPosition(0);
+        intakeToggleVar = true;
+    }
 }
