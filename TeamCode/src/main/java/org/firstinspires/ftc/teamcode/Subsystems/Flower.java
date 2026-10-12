@@ -32,4 +32,12 @@ public class Flower {
             FlowerConstants.flowerToggleVar2 = false;
         }
     }
+    public void resetFlower1() {
+        flowerServo.setPosition(0.25);
+        FlowerConstants.flowerToggleVar = false;
+    }
+    public void resetFlower2() {
+        flowerServo2.setPosition(0.25);
+        FlowerConstants.flowerToggleVar2 = false;
+    }
 }
