@@ -7,60 +7,72 @@ import static com.pedropathing.api.Paths.*;
 import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
+
+import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
 public class BlueFar extends OpMode {
     private Follower follower;
+    private shooter shooter;
     private final PoseFactory p = PoseFactory.degrees();
 
-    private final Pose startPose = p.of(24, 24, 0);
-    private final Pose park = p.of(48, 48, 90);
-    private final Pose controlPose = p.of(36, 60, 45);
     private final PoseFactory poseFactory = PoseFactory.degrees();
-    private final Pose scorePose = poseFactory.of(48, 48, 90);
-    private final Pose parkPose = poseFactory.of(72, 48, 90);
-    /* Creating a Line
-Let's break down the parts of the path quickly:
-line() creates a straight path from startPose to park.
 
-The .linear() part is our Interpolation.
-It changes the robot's heading from the heading of startPose to the heading of park
-while it moves along the path.
-You can play around with this on the visualizer.
- */
-    private Path linePark() {
-    return line(startPose, park).linear(startPose, park);
+    private final Pose start = poseFactory.of(78, 6, 90);
+    private final Pose path1 = poseFactory.of(78, 30, 90);
+    private final Pose point2 = poseFactory.of(108, 30, 90);
+    private final Pose point3 = poseFactory.of(108, 123, -90);
+    private final Pose point4 = poseFactory.of(84, 123, 0);
+    private final Pose point5 = poseFactory.of(126, 123, 180);
+    private final Pose point6Start = poseFactory.of(126, 123, 90);
+    private final Pose point6 = poseFactory.of(126, 36, 90);
+
+    public Path path1() {
+        return line(start, path1).linear(start, path1);
     }
 
-/*
-To make a Curve
-The first and last Poses are the start and end of the curve.
-Any Poses between them are control points that change the shape of the curve.
- */
-
-    private Path curvePark() {
-        return curve(startPose, controlPose, park).linear(startPose, park);
+    public Path path2() {
+        return line(path1, point2).linear(path1, point2);
     }
 
-/* now let us make multiple paths to use in the scheduler */
-private Path startToScore() {
-    return line(startPose, scorePose).linear(startPose, scorePose);
-}
-private Path park(){
-        return line(scorePose, parkPose).linear(scorePose, parkPose);
+    public Path path3() {
+        return line(point2, point3).reverseTangent();
+    }
+
+    public Path path4() {
+        return line(point3, point4).reverseTangent();
+    }
+
+    public Path path5() {
+        return line(point4, point5).reverseTangent();
+    }
+
+    public Path path6() {
+        return line(point6Start, point6).linear(point6Start, point6);
     }
     private Command autoRoutine() {
         return sequential(
-                follow(follower, startToScore()),
-                // Add mechanism commands here.
-                follow(follower, park())
+                follow(follower, path1()),
+                follow(follower, path2()),
+                follow(follower, path3()),
+                follow(follower, path4()),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(1000),
+                instant(()->shooter.SetShooterVelocity(1000)),
+                waitMs(1000),
+                instant(()-> shooter.SetShooterVelocity(0)),
+                instant(()->shooter.GateToggleUp()),
+                follow(follower, path5()),
+                follow(follower, path6())
         );
     }
 
@@ -68,7 +80,7 @@ private Path park(){
     public void init() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
-        follower.setPose(startPose);//sets the starting point of your Robot
+        follower.setPose(start);//sets the starting point of your Robot
         follower.update();
     }
     @Override
