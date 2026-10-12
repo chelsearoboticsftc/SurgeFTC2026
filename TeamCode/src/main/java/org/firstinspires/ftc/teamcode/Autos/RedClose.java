@@ -59,8 +59,11 @@ public class RedClose extends OpMode {
                 instant(() ->Shooter.SetShooterVelocity(0)),
                 instant(() ->Shooter.GateToggleUp()),
                 follow(follower,path1()),
+                waitMs(100),
                 follow(follower,path2()),
+                waitMs(100),
                 follow(follower,path3()),
+                waitMs(100),
                 follow(follower,path4())
         );
     }

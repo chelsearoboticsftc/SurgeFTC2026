@@ -6,15 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
 
-@TeleOp(name = "Field Cenric TeleOp")
+@TeleOp(name = "Field Centric TeleOp")
 public class TeleOpFieldCentric extends OpMode {
     private Intake intake;
     private shooter shooter;
+    private Limelight limelight;
 
     private Follower follower;
     @Override
@@ -27,6 +29,8 @@ public class TeleOpFieldCentric extends OpMode {
         follower = Constants.create(hardwareMap);
         intake = new Intake(hardwareMap);
         shooter = new shooter(hardwareMap);
+        limelight = new Limelight(hardwareMap, telemetry);
+
     }
     @Override
     public void loop() {
@@ -66,13 +70,14 @@ public class TeleOpFieldCentric extends OpMode {
             shooter.GateToggleUp();
         }
 
+        limelight.update();
         follower.manual(powers);
         follower.update();
         Pose robotPose = follower.pose(); // returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
-
+        telemetry.update();
     }
 
 }
