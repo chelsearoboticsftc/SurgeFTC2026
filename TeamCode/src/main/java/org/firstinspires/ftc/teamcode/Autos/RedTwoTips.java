@@ -77,11 +77,12 @@ public class RedTwoTips extends OpMode {
     public Path path10() {
         return Paths.line(point9, point10).linear(point9, point10);
     }    private Command autoRoutine() {
+        double milliseconds;
         return sequential(
                 instant(()->shooter.GateToggleDown()),
                 waitMs(100),
                 instant(()->shooter.SetShooterVelocity(1000)),
-                waitMs(100),
+                waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(0)),
                 instant(()->shooter.GateToggleUp()),
                 follow(follower,path1()),
@@ -91,8 +92,20 @@ public class RedTwoTips extends OpMode {
                 follow(follower,path5()),
                 follow(follower,path6()),
                 follow(follower,path7()),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(100),
+                instant(()->shooter.SetShooterVelocity(1000)),
+                waitMs(1000),
+                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()->shooter.GateToggleUp()),
                 follow(follower,path8()),
                 follow(follower,path9()),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(100),
+                instant(()->shooter.SetShooterVelocity(1000)),
+                waitMs(1000),
+                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()->shooter.GateToggleUp()),
                 follow(follower,path10())
         );
     }
