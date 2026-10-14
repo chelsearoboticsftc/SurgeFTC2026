@@ -14,28 +14,21 @@ import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
-import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
-public class BlueFar extends OpMode {
+public class BlueAudienceTarget extends OpMode {
     private Follower follower;
     private shooter shooter;
-    private final PoseFactory p = PoseFactory.degrees();
-
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(78, 6, 90);
-    private final Pose path1 = poseFactory.of(78, 30, 90);
-    private final Pose point2 = poseFactory.of(108, 30, 90);
-    private final Pose point3 = poseFactory.of(108, 123, -90);
-    private final Pose point4 = poseFactory.of(84, 123, 0);
-    private final Pose point5 = poseFactory.of(126, 123, 180);
-    private final Pose point6Start = poseFactory.of(126, 123, 90);
-    private final Pose point6 = poseFactory.of(126, 36, 90);
-
+    private final Pose start = poseFactory.of(80, 8, 270);
+    private final Pose path1 = poseFactory.of(80, 35, 270);
+    private final Pose point2 = poseFactory.of(135, 35, 270);
+//    private final Pose point3 = poseFactory.of(116, 123, 90);
+//waits for exactly 15000 ms (15s) then shoots,
     public Path path1() {
         return line(start, path1).linear(start, path1);
     }
@@ -44,35 +37,21 @@ public class BlueFar extends OpMode {
         return line(path1, point2).linear(path1, point2);
     }
 
-    public Path path3() {
-        return line(point2, point3).reverseTangent();
-    }
-
-    public Path path4() {
-        return line(point3, point4).reverseTangent();
-    }
-
-    public Path path5() {
-        return line(point4, point5).reverseTangent();
-    }
-
-    public Path path6() {
-        return line(point6Start, point6).linear(point6Start, point6);
-    }
     private Command autoRoutine() {
         return sequential(
+                waitMs(15000),
+                // commenting out until Gate exists
+                //instant(()->shooter.GateToggleDown()),
+                waitMs(100),
+                // commenting out until shooter exists
+                //instant(()->shooter.SetShooterVelocity(1000)),
+                waitMs(1000),
+                // commenting out until Gate exists
+                //instant(()->shooter.SetShooterVelocity(0)),
+                // commenting out until Gate exists
+                //instant(()->shooter.GateToggleUp()),
                 follow(follower, path1()),
-                follow(follower, path2()),
-                follow(follower, path3()),
-                follow(follower, path4()),
-                instant(()->shooter.GateToggleDown()),
-                waitMs(1000),
-                instant(()->shooter.SetShooterVelocity(1000)),
-                waitMs(1000),
-                instant(()-> shooter.SetShooterVelocity(0)),
-                instant(()->shooter.GateToggleUp()),
-                follow(follower, path5()),
-                follow(follower, path6())
+                follow(follower, path2())
         );
     }
 
