@@ -6,38 +6,38 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.intellij.lang.annotations.Flow;
 
 public class Flower {
-    Servo flowerServo;
-    Servo flowerServo2;
+    Servo flowerServoR;
+    Servo flowerServoL;
     public Flower(HardwareMap hardwareMap) {
-        this.flowerServo = hardwareMap.get(Servo.class,"flowerServo");
-        this.flowerServo2 = hardwareMap.get(Servo.class,"flowerServo2");
+        this.flowerServoR = hardwareMap.get(Servo.class,"flowerServo");
+        this.flowerServoL = hardwareMap.get(Servo.class,"flowerServo2");
     }
     public void flowerToggle() {
         if (!FlowerConstants.flowerToggleVar) {
-            flowerServo.setPosition(FlowerConstants.flowerDown);
+            flowerServoR.setPosition(FlowerConstants.flowerDown);
             FlowerConstants.flowerToggleVar = true;
         }
         else {
-            flowerServo.setPosition(FlowerConstants.flowerUp);
+            flowerServoR.setPosition(FlowerConstants.flowerUp);
             FlowerConstants.flowerToggleVar = false;
         }
     }
     public void flowerToggle2() {
         if (!FlowerConstants.flowerToggleVar2) {
-            flowerServo2.setPosition(FlowerConstants.flowerDown);
+            flowerServoL.setPosition(FlowerConstants.flowerDown);
             FlowerConstants.flowerToggleVar2 = true;
         }
         else {
-            flowerServo2.setPosition(FlowerConstants.flowerUp);
+            flowerServoL.setPosition(FlowerConstants.flowerUp);
             FlowerConstants.flowerToggleVar2 = false;
         }
     }
     public void resetFlower1() {
-        flowerServo.setPosition(0.25);
+        flowerServoR.setPosition(0.25);
         FlowerConstants.flowerToggleVar = false;
     }
     public void resetFlower2() {
-        flowerServo2.setPosition(0.25);
+        flowerServoL.setPosition(0.25);
         FlowerConstants.flowerToggleVar2 = false;
     }
 }
