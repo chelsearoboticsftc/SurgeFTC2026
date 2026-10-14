@@ -77,6 +77,15 @@ public class TeleOpFieldCentric extends OpMode {
         if (gamepad1.xWasPressed()) {
             flower.flowerToggle2();
         }
+        if (gamepad1.dpad_up) {
+            flower.resetFlower1();
+        }
+        if (gamepad1.dpad_right) {
+            flower.resetFlower2();
+        }
+        if (gamepad1.dpad_down) {
+            intake.intakeServoReset();
+        }
 
         limelight.update();
         follower.manual(powers);
