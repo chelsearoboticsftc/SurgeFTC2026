@@ -12,7 +12,7 @@ public class Flower {
         this.flowerServoR = hardwareMap.get(Servo.class,"flowerServo");
         this.flowerServoL = hardwareMap.get(Servo.class,"flowerServo2");
     }
-    public void flowerToggle() {
+    public void flowerToggleR() {
         if (!FlowerConstants.flowerToggleVar) {
             flowerServoR.setPosition(FlowerConstants.flowerDown);
             FlowerConstants.flowerToggleVar = true;
@@ -22,7 +22,7 @@ public class Flower {
             FlowerConstants.flowerToggleVar = false;
         }
     }
-    public void flowerToggle2() {
+    public void flowerToggleL() {
         if (!FlowerConstants.flowerToggleVar2) {
             flowerServoL.setPosition(FlowerConstants.flowerDown);
             FlowerConstants.flowerToggleVar2 = true;
@@ -32,11 +32,11 @@ public class Flower {
             FlowerConstants.flowerToggleVar2 = false;
         }
     }
-    public void resetFlower1() {
+    public void resetFlowerR() {
         flowerServoR.setPosition(0.25);
         FlowerConstants.flowerToggleVar = false;
     }
-    public void resetFlower2() {
+    public void resetFlowerL() {
         flowerServoL.setPosition(0.25);
         FlowerConstants.flowerToggleVar2 = false;
     }
