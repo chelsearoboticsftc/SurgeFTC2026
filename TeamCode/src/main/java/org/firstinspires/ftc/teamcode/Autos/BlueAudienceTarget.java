@@ -14,6 +14,7 @@ import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
@@ -40,16 +41,12 @@ public class BlueAudienceTarget extends OpMode {
     private Command autoRoutine() {
         return sequential(
                 waitMs(15000),
-                // commenting out until Gate exists
-                //instant(()->shooter.GateToggleDown()),
+                instant(()->shooter.GateToggleDown()),
                 waitMs(100),
-                // commenting out until shooter exists
-                //instant(()->shooter.SetShooterVelocity(1000)),
+                instant(()->shooter.SetShooterVelocity(1000)),
                 waitMs(1000),
-                // commenting out until Gate exists
-                //instant(()->shooter.SetShooterVelocity(0)),
-                // commenting out until Gate exists
-                //instant(()->shooter.GateToggleUp()),
+                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()->shooter.GateToggleUp()),
                 follow(follower, path1()),
                 follow(follower, path2())
         );
@@ -61,6 +58,7 @@ public class BlueAudienceTarget extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
+        shooter = new shooter(hardwareMap);
     }
     @Override
     public void start() {
