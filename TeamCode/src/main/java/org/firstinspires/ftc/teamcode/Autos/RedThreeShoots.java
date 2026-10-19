@@ -22,7 +22,7 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
-public class RedThreeShoots extends OpMode {
+public class  RedThreeShoots extends OpMode {
     private Follower follower;
     private shooter shooter;
     private Intake intake;
@@ -83,7 +83,7 @@ public class RedThreeShoots extends OpMode {
         double milliseconds;
         return sequential(
                 instant(()->shooter.GateToggleDown()),
-                waitMs(100),
+                waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(1000)),
                 waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(0)),
@@ -97,7 +97,7 @@ public class RedThreeShoots extends OpMode {
                 follow(follower,path5()),
                 follow(follower,path6()),
                 instant(()->shooter.GateToggleDown()),
-                waitMs(100),
+                waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(1000)),
                 waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(0)),
@@ -109,7 +109,7 @@ public class RedThreeShoots extends OpMode {
                 instant(()->intake.setMotorPower(0)),
                 follow(follower,path8()),
                 instant(()->shooter.GateToggleDown()),
-                waitMs(100),
+                waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(1000)),
                 waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(0)),
