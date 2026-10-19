@@ -44,8 +44,8 @@ public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
         c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         c.xPodOffset.set(-5.8603067473163755);
         c.yPodOffset.set(2.3439152034248893);
-        c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
         c.offsetUnits.set(DistanceUnit.INCH);
     });
