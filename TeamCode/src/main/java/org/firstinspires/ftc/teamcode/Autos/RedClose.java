@@ -9,6 +9,7 @@ import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
@@ -26,13 +27,14 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 public class RedClose extends OpMode {
     private Follower follower;
     private shooter Shooter;
+    private Intake Intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(57, 9, 90);
-    private final Pose path1 = poseFactory.of(57, 24, 90);
-    private final Pose point2 = poseFactory.of(27, 24, 90);
-    private final Pose point3 = poseFactory.of(27, 99, 90);
-    private final Pose point4 = poseFactory.of(9, 99, 90);
+    private final Pose start = poseFactory.of(57, 9, 270);
+    private final Pose path1 = poseFactory.of(57, 24, 270);
+    private final Pose point2 = poseFactory.of(27, 24, 270);
+    private final Pose point3 = poseFactory.of(27, 99, 270);
+    private final Pose point4 = poseFactory.of(9, 99, 270);
 
     public Path path1() {
         return Paths.line(start, path1).linear(start, path1);
@@ -54,9 +56,11 @@ public class RedClose extends OpMode {
         return sequential(
                 instant(() ->Shooter.GateToggleDown()),
                 waitMs(100),
-                instant(() ->Shooter.SetShooterVelocity(1000)),
+                instant(()->Intake.setIndexPower(1)),
+                instant(() ->Shooter.SetShooterVelocity(1700)),
                 waitMs(1000),
                 instant(() ->Shooter.SetShooterVelocity(0)),
+                instant(()-> Intake.setIndexPower(0)),
                 instant(() ->Shooter.GateToggleUp()),
                 follow(follower,path1()),
                 waitMs(100),
