@@ -38,54 +38,70 @@ public class TeleOpFieldCentric extends OpMode {
     public void loop() {
         DrivePowers powers = ManualDrive.fieldCentric(
                 -gamepad1.left_stick_y,
-                gamepad1.left_stick_x,
-                gamepad1.right_stick_x,
+               - gamepad1.left_stick_x,
+                -
+                        gamepad1.right_stick_x,
                 follower.pose().heading()
         );
         if (gamepad1.left_trigger > 0){
+            telemetry.addLine("intake working");
             intake.setMotorPower(1);
         }
-        else {
-            intake.setMotorPower(0);
+        if (gamepad1.right_trigger > 0){
+            telemetry.addLine("intake working");
+            intake.setMotorPower(-1);
         }
-        if (gamepad1.right_bumper) {
+        if (gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0){
+            intake.setMotorPower(0);}
+
+        if (gamepad2.left_trigger > 0) {
+
+
             intake.setIndexPower(1);
         }
-        else {
+        if (gamepad2.left_trigger == 0){
             intake.setIndexPower(0);
         }
-        if (gamepad1.right_trigger > 0){
-            shooter.SetShooterVelocity(1000);
+        if (gamepad2.left_bumper) {
+            intake.setIndexPower(-1);
+        }
+       // else {
+         //   intake.setIndexPower(0);
+        //}
+        if (gamepad2.right_trigger > 0){
+            shooter.SetShooterVelocity(1500);
         }
         else {
             shooter.SetShooterVelocity(0);
         }
 
 
-        if (gamepad1.yWasPressed()) {
+        if (gamepad2.yWasPressed()) {
+
             intake.intakeToggle();
         }
-        if (gamepad1.b) {
-            shooter.GateToggleDown();
+        if (gamepad2.b) {
+            shooter.GateToggleUp();
         }
         else {
-            shooter.GateToggleUp();
+            shooter.GateToggleDown();
         }
         if (gamepad1.aWasPressed()) {
             flower.flowerToggleR();
+            intake.intakeToggle();
         }
-        if (gamepad1.xWasPressed()) {
-            flower.flowerToggleL();
-        }
-        if (gamepad1.dpad_up) {
-            flower.resetFlowerR();
-        }
-        if (gamepad1.dpad_right) {
-            flower.resetFlowerL();
-        }
-        if (gamepad1.dpad_down) {
-            intake.intakeServoReset();
-        }
+        //if (gamepad1.xWasPressed()) {
+          //  flower.flowerToggleL();
+       // }
+//        if (gamepad2.dpad_up) {
+//            flower.resetFlowerR();
+//        }
+//        if (gamepad2.dpad_right) {
+//            flower.resetFlowerL();
+//        }
+//        if (gamepad2.dpad_down) {
+//            intake.intakeServoReset();
+//        }
 
         limelight.update();
         follower.manual(powers);

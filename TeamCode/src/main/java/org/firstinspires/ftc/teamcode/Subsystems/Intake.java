@@ -20,6 +20,8 @@ public class Intake {
     //private double intakePower = 0;
     public double intakeUp = IntakeConstants.intakeUp;
     public double intakeDown = IntakeConstants.intakeDown;
+    public double intakeUp2 = IntakeConstants.intakeUp2;
+    public double intakeDown2 = IntakeConstants.intakeDown2;
     public boolean intakeToggleVar = IntakeConstants.intakeToggleVar;
 
     public Intake(HardwareMap hardwareMap) {
@@ -42,12 +44,12 @@ public class Intake {
     public void intakeToggle() {
         if (!intakeToggleVar) {
             intakeServoR.setPosition(intakeDown);
-            intakeServoL.setPosition(intakeDown);
+            intakeServoL.setPosition(intakeDown2);
             intakeToggleVar = true;
         }
         else {
             intakeServoR.setPosition(intakeUp);
-            intakeServoL.setPosition(intakeUp);
+            intakeServoL.setPosition(intakeUp2);
             intakeToggleVar = false;
         }
     }
