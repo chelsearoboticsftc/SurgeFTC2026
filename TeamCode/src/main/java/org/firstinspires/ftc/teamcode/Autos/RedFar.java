@@ -9,6 +9,7 @@ import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
@@ -24,6 +25,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 public class RedFar extends OpMode {
     private Follower follower;
     private shooter Shooter;
+    private Intake Intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(27, 132, 90);
@@ -59,9 +61,11 @@ public class RedFar extends OpMode {
                 follow(follower,path2()),
                 instant(()->Shooter.GateToggleDown()),
                 waitMs(100),
-                instant(()->Shooter.SetShooterVelocity(1000)),
+                instant(()->Intake.setIndexPower(1)),
+                instant(()->Shooter.SetShooterVelocity(1700)),
                 waitMs(1000),
                 instant(()->Shooter.SetShooterVelocity(0)),
+                instant(()->Intake.setIndexPower(0)),
                 instant(()->Shooter.GateToggleUp()),
                 follow(follower,path3()),
                 waitMs(100),
