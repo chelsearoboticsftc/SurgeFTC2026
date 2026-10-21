@@ -57,11 +57,26 @@ public class RedClose extends OpMode {
                 instant(() ->Shooter.GateToggleDown()),
                 waitMs(100),
                 instant(()->Intake.setIndexPower(1)),
-                instant(() ->Shooter.SetShooterVelocity(1700)),
+                instant(() ->Shooter.SetShooterVelocity(2800)),
                 waitMs(1000),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(15000),
                 instant(() ->Shooter.SetShooterVelocity(0)),
                 instant(()-> Intake.setIndexPower(0)),
-                instant(() ->Shooter.GateToggleUp()),
                 follow(follower,path1()),
                 waitMs(100),
                 follow(follower,path2()),
@@ -78,6 +93,7 @@ public class RedClose extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();
+        Intake = new Intake(hardwareMap);
         Shooter = new shooter(hardwareMap);
     }
     @Override
