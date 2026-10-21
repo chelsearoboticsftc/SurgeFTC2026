@@ -20,7 +20,8 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
-public class BlueFarShoot1 extends OpMode {
+public class BlueFar extends OpMode {
+    //shoot once
     private Follower follower;
     private shooter shooter;
     private final PoseFactory poseFactory = PoseFactory.degrees();
