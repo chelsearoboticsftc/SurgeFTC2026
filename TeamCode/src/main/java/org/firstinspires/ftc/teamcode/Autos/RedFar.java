@@ -23,7 +23,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
 public class RedFar extends OpMode {
-    //shoot once 
+    //shoot once
     private Follower follower;
     private shooter Shooter;
     private Intake Intake;
