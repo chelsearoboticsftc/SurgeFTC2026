@@ -33,7 +33,8 @@ public class RedFar extends OpMode {
     private final Pose point2 = poseFactory.of(60, 18, 270);
     private final Pose point3 = poseFactory.of(18, 18, 270);
     private final Pose point4 = poseFactory.of(18, 99, 270);
-    private final Pose point5 = poseFactory.of(9, 99, 270);
+    public final Pose endpoint = poseFactory.of(9, 85, 270);
+
 
     public Path path1() {
         return Paths.line(start, path1).linear(start, path1);
@@ -52,7 +53,7 @@ public class RedFar extends OpMode {
     }
 
     public Path path5() {
-        return Paths.line(point4, point5).linear(point4, point5);
+        return Paths.line(point4, endpoint).linear(point4, endpoint);
     }    private Command autoRoutine() {
         return sequential(
                 waitMs(6000),
@@ -83,6 +84,7 @@ public class RedFar extends OpMode {
         follower.update();
         Shooter = new shooter(hardwareMap);
         Intake = new Intake(hardwareMap);
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

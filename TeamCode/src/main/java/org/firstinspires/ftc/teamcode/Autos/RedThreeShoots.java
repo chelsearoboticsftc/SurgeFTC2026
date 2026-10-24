@@ -39,7 +39,8 @@ public class  RedThreeShoots extends OpMode {
     private final Pose point6 = poseFactory.of(60, 129, 180);
     private final Pose point7 = poseFactory.of(45, 129, 180);
     private final Pose point8 = poseFactory.of(54, 123, 90);
-    private final Pose point9 = poseFactory.of(9, 108, 90);
+    public final Pose endpoint = poseFactory.of(9, 108, 90);
+
 
     public Path path1() {
         return Paths.line(path2, path1).linear(path2, path1);
@@ -74,12 +75,10 @@ public class  RedThreeShoots extends OpMode {
     }
 
     public Path path9() {
-        return Paths.line(point8, point9).linear(point8, point9);
+        return Paths.line(point8, endpoint).linear(point8, endpoint);
     }
 
-    public Path path10() {
-        return Paths.line(point8, point9).linear(point8, point9);
-    }    private Command autoRoutine() {
+    private Command autoRoutine() {
         double milliseconds;
         return sequential(
                 instant(()->shooter.GateToggleDown()),
@@ -190,6 +189,7 @@ public class  RedThreeShoots extends OpMode {
         shooter = new shooter(hardwareMap);
         flower = new Flower(hardwareMap);
         follower.update();
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

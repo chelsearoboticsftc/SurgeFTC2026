@@ -8,6 +8,7 @@ import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
@@ -24,13 +25,15 @@ public class BlueFar extends OpMode {
     //shoot once
     private Follower follower;
     private shooter shooter;
+    private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(80, 133, 90);
+    private final Pose start = poseFactory.of(85, 133, 90);
     private final Pose path1 = poseFactory.of(80, 119, 90);
     private final Pose point2 = poseFactory.of(120, 119,90);
-    private final Pose point3 = poseFactory.of(120, 35, 90);
-    private final Pose point4 = poseFactory.of(130, 35, 90);
+    private final Pose point3 = poseFactory.of(120, 45, 90);
+    public final Pose endpoint = poseFactory.of(130, 45, 90);
+
 
     public Path path1() {
         return line(start, path1).linear(start, path1);
@@ -45,16 +48,32 @@ public class BlueFar extends OpMode {
 
     }
     public Path path4(){
-        return line(point3, point4) .linear (point3, point4);
+        return line(point3, endpoint) .linear (point3, endpoint);
     }
     private Command autoRoutine() {
         return sequential(
-                instant(()->shooter.SetShooterVelocity(1000)),
+                instant(()->shooter.SetShooterVelocity(1750)),
                 waitMs(1000),
+                instant(()->intake.setIndexPower(1)),
                 instant(()->shooter.GateToggleUp()),
-                waitMs(1000),
-                instant(()-> shooter.SetShooterVelocity(0)),
+                waitMs(750),
                 instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()->intake.setIndexPower(0)),
+                instant(()->shooter.GateToggleUp()),
                 follow(follower,path1()),
                 follow(follower,path2()),
                 follow(follower,path3()),
@@ -69,6 +88,8 @@ public class BlueFar extends OpMode {
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
         shooter = new shooter(hardwareMap);
+        intake = new Intake(hardwareMap);
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

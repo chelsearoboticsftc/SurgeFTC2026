@@ -8,6 +8,7 @@ import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
@@ -21,16 +22,20 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
 public class BlueAudience extends OpMode {
-    //shoot once
     private Follower follower;
+    private Intake intake;
     private shooter shooter;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(80, 8, 270);
-    private final Pose path1 = poseFactory.of(80, 35, 270);
-    private final Pose point2 = poseFactory.of(135, 35, 270);
-//    private final Pose point3 = poseFactory.of(116, 123, 90);
-//waits for exactly 15000 ms (15s) then shoots,
+    private final Pose start = poseFactory.of(80, 8, 90);
+    private final Pose path1 = poseFactory.of(80, 32, 90);
+    private final Pose point2 = poseFactory.of(117, 32, 90);
+    private final Pose point3 = poseFactory.of(117, 120, 90);
+    private final Pose point4 = poseFactory.of(90, 120, 90);
+    private final Pose point5 = poseFactory.of(117, 120, 90);
+    private final Pose point6 = poseFactory.of(117, 32, 90);
+    private final Pose endpoint = poseFactory.of(131, 32, 90);
+
     public Path path1() {
         return line(start, path1).linear(start, path1);
     }
@@ -39,16 +44,56 @@ public class BlueAudience extends OpMode {
         return line(path1, point2).linear(path1, point2);
     }
 
+    public Path path3() {
+        return line(point2, point3).linear(point2, point3);
+    }
+
+    public Path path4() {
+        return line(point3, point4).linear(point3, point4);
+    }
+
+    public Path path5() {
+        return line(point4, point5).linear(point4, point5);
+    }
+
+    public Path path6() {
+        return line(point5, point6).linear(point5, point6);
+    }
+
+    public Path path7() {
+        return line(point6, endpoint).linear(point6, endpoint);
+    }
     private Command autoRoutine() {
         return sequential(
-                instant(()->shooter.SetShooterVelocity(1000)),
-                waitMs(15000),
-                instant(()->shooter.GateToggleUp()),
-                waitMs(1000),
-                instant(()->shooter.SetShooterVelocity(0)),
-                instant(()->shooter.GateToggleDown()),
                 follow(follower, path1()),
-                follow(follower, path2())
+                follow(follower, path2()),
+                follow(follower, path3()),
+                follow(follower, path4()),
+                instant(()->shooter.SetShooterVelocity(1800)),
+                waitMs(1000),
+                instant(()->intake.setIndexPower(1)),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()->intake.setIndexPower(0)),
+                instant(()->shooter.GateToggleUp()),
+                follow(follower, path5()),
+                follow(follower, path6()),
+                follow(follower, path7())
         );
     }
 
@@ -56,9 +101,11 @@ public class BlueAudience extends OpMode {
     public void init() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
-        follower.setPose(start);//sets the starting point of your Robot
+        follower.setPose(start);
         follower.update();
         shooter = new shooter(hardwareMap);
+        intake = new Intake(hardwareMap);
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

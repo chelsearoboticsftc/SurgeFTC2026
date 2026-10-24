@@ -25,14 +25,14 @@ public class ShortRed extends OpMode {
     private final Pose start = poseFactory.of(9, 63, 0);
     private final Pose path1Start = poseFactory.of(9, 63, 0);
     private final Pose path1 = poseFactory.of(21, 63, 0);
-    private final Pose point2 = poseFactory.of(16, 96, 0);
+    public final Pose endpoint = poseFactory.of(16, 96, 0);
 
     public Path path1() {
         return Paths.line(path1Start, path1).linear(path1Start, path1);
     }
 
     public Path path2() {
-        return Paths.line(path1, point2).linear(path1, point2);
+        return Paths.line(path1, endpoint).linear(path1, endpoint);
     }
     private Command autoRoutine() {
         return sequential(
@@ -47,6 +47,7 @@ public class ShortRed extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {
