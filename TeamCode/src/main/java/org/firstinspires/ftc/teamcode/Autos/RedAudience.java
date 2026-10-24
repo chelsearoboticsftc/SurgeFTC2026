@@ -4,7 +4,6 @@ import com.pedropathing.api.Paths;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import static com.pedropathing.api.Paths.*;
 import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
@@ -16,7 +15,6 @@ import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.ivy.Scheduler;
 
-import static com.pedropathing.ivy.Scheduler.execute;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
@@ -24,7 +22,8 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
-public class RedClose extends OpMode {
+public class RedAudience extends OpMode {
+    //shoot once 
     private Follower follower;
     private shooter Shooter;
     private Intake Intake;
@@ -57,11 +56,26 @@ public class RedClose extends OpMode {
                 instant(() ->Shooter.GateToggleDown()),
                 waitMs(100),
                 instant(()->Intake.setIndexPower(1)),
-                instant(() ->Shooter.SetShooterVelocity(1700)),
+                instant(() ->Shooter.SetShooterVelocity(2800)),
                 waitMs(1000),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleUp()),
+                waitMs(100),
+                instant(() ->Shooter.GateToggleDown()),
+                waitMs(15000),
                 instant(() ->Shooter.SetShooterVelocity(0)),
                 instant(()-> Intake.setIndexPower(0)),
-                instant(() ->Shooter.GateToggleUp()),
                 follow(follower,path1()),
                 waitMs(100),
                 follow(follower,path2()),
@@ -78,6 +92,7 @@ public class RedClose extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();
+        Intake = new Intake(hardwareMap);
         Shooter = new shooter(hardwareMap);
     }
     @Override

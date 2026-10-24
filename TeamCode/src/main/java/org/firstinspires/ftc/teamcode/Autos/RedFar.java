@@ -4,7 +4,6 @@ import com.pedropathing.api.Paths;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import static com.pedropathing.api.Paths.*;
 import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
@@ -23,6 +22,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
 public class RedFar extends OpMode {
+    //shoot once
     private Follower follower;
     private shooter Shooter;
     private Intake Intake;
@@ -30,10 +30,10 @@ public class RedFar extends OpMode {
 
     private final Pose start = poseFactory.of(27, 132, 90);
     private final Pose path1 = poseFactory.of(27, 18, 90);
-    private final Pose point2 = poseFactory.of(60, 18, 90);
-    private final Pose point3 = poseFactory.of(18, 18, 90);
-    private final Pose point4 = poseFactory.of(18, 99, 90);
-    private final Pose point5 = poseFactory.of(9, 99, 90);
+    private final Pose point2 = poseFactory.of(60, 18, 270);
+    private final Pose point3 = poseFactory.of(18, 18, 270);
+    private final Pose point4 = poseFactory.of(18, 99, 270);
+    private final Pose point5 = poseFactory.of(9, 99, 270);
 
     public Path path1() {
         return Paths.line(start, path1).linear(start, path1);
@@ -82,6 +82,7 @@ public class RedFar extends OpMode {
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
         Shooter = new shooter(hardwareMap);
+        Intake = new Intake(hardwareMap);
     }
     @Override
     public void start() {

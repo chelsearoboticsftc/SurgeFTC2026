@@ -20,16 +20,18 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
-public class BlueAudienceTarget extends OpMode {
+public class BlueFar extends OpMode {
+    //shoot once
     private Follower follower;
     private shooter shooter;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(80, 8, 270);
-    private final Pose path1 = poseFactory.of(80, 35, 270);
-    private final Pose point2 = poseFactory.of(135, 35, 270);
-//    private final Pose point3 = poseFactory.of(116, 123, 90);
-//waits for exactly 15000 ms (15s) then shoots,
+    private final Pose start = poseFactory.of(80, 133, 90);
+    private final Pose path1 = poseFactory.of(80, 119, 90);
+    private final Pose point2 = poseFactory.of(120, 119,90);
+    private final Pose point3 = poseFactory.of(120, 35, 90);
+    private final Pose point4 = poseFactory.of(130, 35, 90);
+
     public Path path1() {
         return line(start, path1).linear(start, path1);
     }
@@ -38,16 +40,25 @@ public class BlueAudienceTarget extends OpMode {
         return line(path1, point2).linear(path1, point2);
     }
 
+    public Path path3() {
+        return line(point2, point3).linear(point2, point3);
+
+    }
+    public Path path4(){
+        return line(point3, point4) .linear (point3, point4);
+    }
     private Command autoRoutine() {
         return sequential(
                 instant(()->shooter.SetShooterVelocity(1000)),
-                waitMs(15000),
+                waitMs(1000),
                 instant(()->shooter.GateToggleUp()),
                 waitMs(1000),
-                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()-> shooter.SetShooterVelocity(0)),
                 instant(()->shooter.GateToggleDown()),
-                follow(follower, path1()),
-                follow(follower, path2())
+                follow(follower,path1()),
+                follow(follower,path2()),
+                follow(follower,path3()),
+                follow(follower,path4())
         );
     }
 
