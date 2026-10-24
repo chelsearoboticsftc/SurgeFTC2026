@@ -41,13 +41,12 @@ public class BlueAudience extends OpMode {
 
     private Command autoRoutine() {
         return sequential(
-                waitMs(15000),
-                instant(()->shooter.GateToggleDown()),
-                waitMs(100),
                 instant(()->shooter.SetShooterVelocity(1000)),
+                waitMs(15000),
+                instant(()->shooter.GateToggleUp()),
                 waitMs(1000),
                 instant(()->shooter.SetShooterVelocity(0)),
-                instant(()->shooter.GateToggleUp()),
+                instant(()->shooter.GateToggleDown()),
                 follow(follower, path1()),
                 follow(follower, path2())
         );

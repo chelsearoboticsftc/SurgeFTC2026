@@ -49,12 +49,12 @@ public class BlueFar extends OpMode {
     }
     private Command autoRoutine() {
         return sequential(
-                instant(()->shooter.GateToggleDown()),
-                waitMs(100),
                 instant(()->shooter.SetShooterVelocity(1000)),
                 waitMs(1000),
-                instant(()-> shooter.SetShooterVelocity(0)),
                 instant(()->shooter.GateToggleUp()),
+                waitMs(1000),
+                instant(()-> shooter.SetShooterVelocity(0)),
+                instant(()->shooter.GateToggleDown()),
                 follow(follower,path1()),
                 follow(follower,path2()),
                 follow(follower,path3()),
