@@ -32,7 +32,8 @@ public class BlueFar extends OpMode {
     private final Pose path1 = poseFactory.of(80, 119, 90);
     private final Pose point2 = poseFactory.of(120, 119,90);
     private final Pose point3 = poseFactory.of(120, 45, 90);
-    private final Pose endpoint = poseFactory.of(130, 45, 90);
+    public final Pose endpoint = poseFactory.of(130, 45, 90);
+
 
     public Path path1() {
         return line(start, path1).linear(start, path1);
@@ -88,6 +89,7 @@ public class BlueFar extends OpMode {
         follower.update();
         shooter = new shooter(hardwareMap);
         intake = new Intake(hardwareMap);
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

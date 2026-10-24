@@ -25,15 +25,17 @@ public class ShortBlue extends OpMode {
     private final Pose start = poseFactory.of(132, 72, 180);
     private final Pose path1Start = poseFactory.of(132, 72, 180);
     private final Pose path1 = poseFactory.of(117, 72, 180);
-    private final Pose point2 = poseFactory.of(129, 45, 180);
+    public final Pose endpoint = poseFactory.of(129, 45, 180);
+
 
     public Path path1() {
         return Paths.line(path1Start, path1).linear(path1Start, path1);
     }
 
     public Path path2() {
-        return Paths.line(path1, point2).tangent();
-    }    private Command autoRoutine() {
+        return Paths.line(path1, endpoint).linear(path1, endpoint);
+    }
+    private Command autoRoutine() {
         return sequential(
                 follow(follower, path1()),
                 waitMs(500),
@@ -47,6 +49,7 @@ public class ShortBlue extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

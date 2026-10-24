@@ -34,7 +34,7 @@ public class BlueAudience extends OpMode {
     private final Pose point4 = poseFactory.of(90, 120, 90);
     private final Pose point5 = poseFactory.of(117, 120, 90);
     private final Pose point6 = poseFactory.of(117, 32, 90);
-    private final Pose point7 = poseFactory.of(131, 32, 90);
+    private final Pose endpoint = poseFactory.of(131, 32, 90);
 
     public Path path1() {
         return line(start, path1).linear(start, path1);
@@ -61,7 +61,7 @@ public class BlueAudience extends OpMode {
     }
 
     public Path path7() {
-        return line(point6, point7).linear(point6, point7);
+        return line(point6, endpoint).linear(point6, endpoint);
     }
     private Command autoRoutine() {
         return sequential(
@@ -105,6 +105,7 @@ public class BlueAudience extends OpMode {
         follower.update();
         shooter = new shooter(hardwareMap);
         intake = new Intake(hardwareMap);
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

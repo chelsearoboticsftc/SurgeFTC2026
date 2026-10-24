@@ -79,6 +79,7 @@ public class BlueAudienceWait extends OpMode {
         follower.update();
         shooter = new shooter(hardwareMap);
         intake = new Intake(hardwareMap);
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {
