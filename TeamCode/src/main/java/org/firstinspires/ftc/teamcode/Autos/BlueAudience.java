@@ -30,9 +30,9 @@ public class BlueAudience extends OpMode {
     private final Pose start = poseFactory.of(80, 8, 90);
     private final Pose path1 = poseFactory.of(80, 32, 90);
     private final Pose point2 = poseFactory.of(117, 32, 90);
-    private final Pose point3 = poseFactory.of(117, 120, 90);
-    private final Pose point4 = poseFactory.of(90, 120, 90);
-    private final Pose point5 = poseFactory.of(117, 120, 90);
+    private final Pose point3 = poseFactory.of(117, 133, 90);
+    private final Pose point4 = poseFactory.of(90, 133, 90);
+    private final Pose point5 = poseFactory.of(117, 133, 90);
     private final Pose point6 = poseFactory.of(117, 32, 90);
     private final Pose point7 = poseFactory.of(131, 32, 90);
 
