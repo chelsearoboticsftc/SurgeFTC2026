@@ -69,17 +69,17 @@ public class TeleOpFieldCentric extends OpMode {
          //   intake.setIndexPower(0);
         //}
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1500);
+            shooter.SetShooterVelocity(1700);
         }
         else {
             shooter.SetShooterVelocity(0);
         }
 
 
-        if (gamepad2.yWasPressed()) {
+        //if (gamepad2.yWasPressed()) {
 
-            intake.intakeToggle();
-        }
+            //intake.intakeToggle();
+        //}
         if (gamepad2.b) {
             shooter.GateToggleUp();
         }

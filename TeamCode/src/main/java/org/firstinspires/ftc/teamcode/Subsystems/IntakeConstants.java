@@ -11,10 +11,10 @@ public class IntakeConstants {
     public static final DcMotorSimple.Direction INTAKE_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static final DcMotor.ZeroPowerBehavior INDEX_ZERO_POWER_BEHAVIOR = DcMotor.ZeroPowerBehavior.BRAKE;
     public static final DcMotorSimple.Direction INDEX_DIRECTION = DcMotorSimple.Direction.FORWARD;
-    public static final double intakeUp = 0;
-    public static final double intakeDown = 0.75;
-    public static final double intakeUp2 = 1;
-    public static final double intakeDown2 = 0.25;
+    public static final double intakeUp = 0.1;
+    public static final double intakeDown = 0.65;
+    public static final double intakeUp2 = 0.9;
+    public static final double intakeDown2 = 0.15;
     public static boolean intakeToggleVar = false;
     public static class SampleSubsystem {
 
