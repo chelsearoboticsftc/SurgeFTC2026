@@ -33,7 +33,7 @@ public class RedAudience extends OpMode {
     private final Pose path1 = poseFactory.of(57, 24, 270);
     private final Pose point2 = poseFactory.of(27, 24, 270);
     private final Pose point3 = poseFactory.of(27, 99, 270);
-    private final Pose point4 = poseFactory.of(9, 99, 270);
+    private final Pose endpoint = poseFactory.of(9, 99, 270);
 
     public Path path1() {
         return Paths.line(start, path1).linear(start, path1);
@@ -48,7 +48,7 @@ public class RedAudience extends OpMode {
     }
 
     public Path path4() {
-        return Paths.line(point3, point4).linear(point3, point4);
+        return Paths.line(point3, endpoint).linear(point3, endpoint);
     }
 
     private Command autoRoutine() {

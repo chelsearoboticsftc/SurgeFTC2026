@@ -8,6 +8,7 @@ import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
@@ -24,11 +25,12 @@ public class BlueAudience extends OpMode {
     //shoot once
     private Follower follower;
     private shooter shooter;
+    private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(80, 8, 270);
     private final Pose path1 = poseFactory.of(80, 35, 270);
-    private final Pose point2 = poseFactory.of(135, 35, 270);
+    private final Pose endpoint = poseFactory.of(130, 25, 270);
 //    private final Pose point3 = poseFactory.of(116, 123, 90);
 //waits for exactly 15000 ms (15s) then shoots,
     public Path path1() {
@@ -36,17 +38,34 @@ public class BlueAudience extends OpMode {
     }
 
     public Path path2() {
-        return line(path1, point2).linear(path1, point2);
+        return line(path1, endpoint).linear(path1, endpoint);
     }
 
     private Command autoRoutine() {
         return sequential(
-                instant(()->shooter.SetShooterVelocity(1000)),
-                waitMs(15000),
-                instant(()->shooter.GateToggleUp()),
+                waitMs(10000),
+                instant(()->shooter.SetShooterVelocity(1800)),
                 waitMs(1000),
-                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()->intake.setIndexPower(1)),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
                 instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.GateToggleUp()),
+                waitMs(750),
+                instant(()->shooter.GateToggleDown()),
+                waitMs(750),
+                instant(()->shooter.SetShooterVelocity(0)),
+                instant(()->intake.setIndexPower(0)),
+                instant(()->shooter.GateToggleUp()),
                 follow(follower, path1()),
                 follow(follower, path2())
         );
@@ -59,6 +78,7 @@ public class BlueAudience extends OpMode {
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
         shooter = new shooter(hardwareMap);
+        intake = new Intake(hardwareMap);
     }
     @Override
     public void start() {
