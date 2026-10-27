@@ -21,4 +21,6 @@ public class TurretConstants {
     public static final double kS = 0.04;
     public static final double kV_HEADING = 0;
     public static final double PRELOAD = 0.06;
+    public static final double OFFSET_X = 0;
+    public static final double OFFSET_Y = 0;
 }
