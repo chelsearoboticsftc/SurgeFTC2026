@@ -22,7 +22,7 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Autonomous
-public class  RedThreeShoots extends OpMode {
+public class RedThreeShoots extends OpMode {
     private Follower follower;
     private shooter shooter;
     private Intake intake;
