@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import static com.pedropathing.utils.Utils.clamp;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.D_FILTER;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.ENCODER_REVERSED;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.LIMIT_TRAVEL;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.MAX_ANGLE_RAD;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.MIN_ANGLE_RAD;
+import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.OFFSET_X;
+import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.OFFSET_Y;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.ON_TARGET_TOL_RAD;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.PRELOAD;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.getHive;
@@ -16,7 +17,7 @@ import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.kS;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.kV_HEADING;
 
 import com.pedropathing.math.Pose;
-import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -28,33 +29,35 @@ public class Turret{
     DcMotorEx TurretEncoder;
     private final ElapsedTime timer = new ElapsedTime();
     private double targetRad = 0;
-    private boolean haveHeading = false;
     private double lastError = 0;
-    private double lastError_abs = 0;
+    private double lastError_abs =  Math.PI;;
     private double dFiltered = 0;
 
 
-    public Turret(HardwareMap HardwareMap){
+
+    public Turret(HardwareMap hardwareMap){
         this.TurretA = hardwareMap.get(CRServo.class,"TurretA");
         this.TurretB = hardwareMap.get(CRServo.class,"TurretB");
         this.TurretEncoder = hardwareMap.get(DcMotorEx.class,"TurretEncoder");
+        TurretEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        TurretEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         timer.reset();
     }
     public int getEncoderPose(){
         return TurretEncoder.getCurrentPosition();
     }
     public double TurretRadians(){
-       double Radians = (getEncoderPose() / 8192) * 2 * Math.PI * (1 / 2.75);
+       double Radians = ((double) getEncoderPose() / 8192) * 2 * Math.PI * (1 / 2.75);
         return ENCODER_REVERSED ? -Radians : Radians;
     }
     public double getAngleRadians(){
         return wrap(0+TurretRadians());
     }
-    public static double[]TurretFieldXY(Pose pose){
+    public static double[] TurretFieldXY(Pose pose){
         double h = pose.heading();
-        double X = pose.x() * Math.cos(h);
-        double Y = pose.y() * Math.cos(h);
-        return new double[]{X,Y};
+        double x = pose.x() + OFFSET_X * Math.cos(h) - OFFSET_Y * Math.sin(h);
+        double y = pose.y() + OFFSET_X * Math.sin(h) + OFFSET_Y * Math.cos(h);
+        return new double[]{x, y};
     }
     public static double angleToTarget(Pose robot, Pose target){
         double[]t = TurretFieldXY(robot);
@@ -68,27 +71,16 @@ public class Turret{
 
 
 
-
-    public void aim( Pose robot, Pose target){
-       targetRad = angleToTarget(robot, target);
-       double headingRate = 0;
-       double lastHeading = 0;
-        haveHeading = false;
-       double now = timer.seconds();
-       if (haveHeading && now>1e-3){
-           headingRate = wrap(robot.heading() - lastHeading);
-       }
-       lastHeading = robot.heading();
-       haveHeading = true;
-       run(headingRate);
+    public void aim(Pose robot, Pose target, double headingRateRadPerSec){
+        targetRad = angleToTarget(robot, target);
+        run(headingRateRadPerSec);
     }
-    public void aimAtHive(Pose robot, TurretConstants.Alliance alliance){
-        aim(robot, getHive(alliance));
 
+    public void aimAtHive(Pose robot, double headingRateRadPerSec, TurretConstants.Alliance alliance){
+        aim(robot, getHive(alliance), headingRateRadPerSec);
     }
     public void holdAngle(double robotRelativeRadians){
         targetRad = wrap(robotRelativeRadians);
-        haveHeading = false;
         run(0);
     }
 
@@ -107,7 +99,7 @@ public class Turret{
 
         double DRaw = (error - lastError) / dt;
         lastError = error;
-        dFiltered = D_FILTER * dFiltered + (1 - D_FILTER);
+        dFiltered = D_FILTER * dFiltered + (1 - D_FILTER) * DRaw;
         lastError_abs = Math.abs(error);
 
         double u = 0;
