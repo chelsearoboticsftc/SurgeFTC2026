@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
+import com.pedropathing.api.Paths;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -28,31 +29,52 @@ public class BlueFarEightBall extends OpMode {
     private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(87, 133, 90);
-    private final Pose path1 = poseFactory.of(132, 133, 0);
-    private final Pose point2 = poseFactory.of(87, 133, 90);
-    private final Pose point3 = poseFactory.of(118, 133, 90);
-    private final Pose point4 = poseFactory.of(118, 46, 90);
-    private final Pose point5 = poseFactory.of(131, 46, 90);
+    private final Pose start = poseFactory.of(87.75, 135.75, 90);
+    private final Pose path1 = poseFactory.of(87.75, 124.75, 0);
+    private final Pose point2Start = poseFactory.of(87.75, 124.75, 0);
+    private final Pose point2 = poseFactory.of(97.75, 132.75, 0);
+    private final Pose point3Start = poseFactory.of(97.75, 132.75, 0);
+    private final Pose point3 = poseFactory.of(130.75, 132.75, 0);
+    private final Pose point4Start = poseFactory.of(130.75, 132.75, 0);
+    private final Pose point4 = poseFactory.of(82.75, 106.75, 0);
+    private final Pose point5Start = poseFactory.of(82.75, 106.75, 270);
+    private final Pose point5 = poseFactory.of(82.75, 11.75, 270);
+    private final Pose point6Start = poseFactory.of(82.75, 11.75, 270);
+    private final Pose point6 = poseFactory.of(82.75, 22.75, 270);
+    private final Pose point7Start = poseFactory.of(82.75, 22.75, 270);
+    private final Pose point7 = poseFactory.of(131.75, 22.75, 270);
+    private final Pose point8 = poseFactory.of(131.75, 22.75, 0);
 
     public Path path1() {
-        return line(start, path1).linear(start, path1);
+        return Paths.line(start, path1).linear(start, path1);
     }
 
     public Path path2() {
-        return line(path1, point2).linear(path1, point2);
+        return Paths.line(point2Start, point2).linear(point2Start, point2);
     }
 
     public Path path3() {
-        return line(point2, point3).linear(point2, point3);
+        return Paths.line(point3Start, point3).linear(point3Start, point3);
     }
 
     public Path path4() {
-        return line(point3, point4).linear(point3, point4);
+        return Paths.line(point4Start, point4).linear(point4Start, point4);
     }
 
     public Path path5() {
-        return line(point4, point5).linear(point4, point5);
+        return Paths.line(point5Start, point5).linear(point5Start, point5);
+    }
+
+    public Path path6() {
+        return Paths.line(point6Start, point6).linear(point6Start, point6);
+    }
+
+    public Path path7() {
+        return Paths.line(point7Start, point7).linear(point7Start, point7);
+    }
+
+    public Path path8() {
+        return Paths.line(point7, point8).tangent();
     }
     private Command autoRoutine() {
         return sequential(
@@ -80,6 +102,9 @@ public class BlueFarEightBall extends OpMode {
                 instant(()->shooter.GateToggleUp()),
                 follow(follower,path1()),
                 follow(follower,path2()),
+                follow(follower,path3()),
+                follow(follower,path4()),
+                follow(follower, path5()),
                 instant(()->shooter.SetShooterVelocity(1750)),
                 waitMs(1000),
                 instant(()->intake.setIndexPower(1)),
@@ -102,9 +127,9 @@ public class BlueFarEightBall extends OpMode {
                 instant(()->shooter.SetShooterVelocity(0)),
                 instant(()->intake.setIndexPower(0)),
                 instant(()->shooter.GateToggleUp()),
-                follow(follower,path3()),
-                follow(follower,path4()),
-                follow(follower, path5())
+                follow(follower, path6()),
+                follow(follower, path7()),
+                follow(follower, path8())
         );
     }
 
