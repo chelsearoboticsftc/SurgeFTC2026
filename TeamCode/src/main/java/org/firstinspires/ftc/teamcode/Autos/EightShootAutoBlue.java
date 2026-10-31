@@ -15,7 +15,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
+
 @Autonomous
 public class EightShootAutoBlue extends OpMode{
 
@@ -71,6 +74,13 @@ private shooter shooter;
                     follow(follower,path6())
             );
     }
+   public void init() {
+       Scheduler.reset();
+       follower = Constants.create(hardwareMap);
+       follower.setPose(start);//sets the starting point of your Robot
+       follower.update();
+       shooter = new shooter(hardwareMap);
+        }
     @Override
     public void start(){schedule(autoRoutine());}
     @Override
