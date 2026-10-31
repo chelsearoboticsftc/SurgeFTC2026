@@ -35,15 +35,15 @@ public class BlueFarEightBall extends OpMode {
     private final Pose point2 = poseFactory.of(97.75, 132.75, 0);
     private final Pose point3Start = poseFactory.of(97.75, 132.75, 0);
     private final Pose point3 = poseFactory.of(130.75, 132.75, 0);
-    private final Pose point4Start = poseFactory.of(130.75, 132.75, 0);
-    private final Pose point4 = poseFactory.of(82.75, 106.75, 0);
+    private final Pose point4Start = poseFactory.of(130.75, 132.75, 270);
+    private final Pose point4 = poseFactory.of(82.75, 106.75, 270);
     private final Pose point5Start = poseFactory.of(82.75, 106.75, 270);
     private final Pose point5 = poseFactory.of(82.75, 11.75, 270);
     private final Pose point6Start = poseFactory.of(82.75, 11.75, 270);
     private final Pose point6 = poseFactory.of(82.75, 22.75, 270);
     private final Pose point7Start = poseFactory.of(82.75, 22.75, 270);
     private final Pose point7 = poseFactory.of(131.75, 22.75, 270);
-    private final Pose point8 = poseFactory.of(131.75, 22.75, 0);
+    private final Pose point8 = poseFactory.of(131.75, 22.75, 270);
 
     public Path path1() {
         return Paths.line(start, path1).linear(start, path1);
