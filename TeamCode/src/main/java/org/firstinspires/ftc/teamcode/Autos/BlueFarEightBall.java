@@ -57,7 +57,7 @@ public class BlueFarEightBall extends OpMode {
     }
 
     public Path path4() {
-        return Paths.line(point4Start, point4).linear(point4Start, point4);
+        return Paths.line(point4Start, point4).constant(point4);
     }
 
     public Path path5() {
@@ -145,6 +145,11 @@ public class BlueFarEightBall extends OpMode {
     public void loop() {
         follower.update();
         Scheduler.execute();
+        Pose robotPose = follower.pose(); // returns a Pose object
+        telemetry.addData("Robot X", robotPose.x());
+        telemetry.addData("Robot Y", robotPose.y());
+        telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
+        telemetry.update();
     }
 
     @Override
