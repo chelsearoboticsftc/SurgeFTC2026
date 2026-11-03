@@ -10,7 +10,9 @@ import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.OFFSET_X
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.OFFSET_Y;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.ON_TARGET_TOL_RAD;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.PRELOAD;
-import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.getHive;
+import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.getGoals;
+import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.GOAL_SWITCH_Y;
+import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.GOAL_SWITCH_MARGIN;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.kD;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.kP;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.kS;
@@ -30,8 +32,9 @@ public class Turret{
     private final ElapsedTime timer = new ElapsedTime();
     private double targetRad = 0;
     private double lastError = 0;
-    private double lastError_abs =  Math.PI;;
+    private double lastError_abs =  Math.PI;
     private double dFiltered = 0;
+    private int currentGoal = -1;
 
 
 
@@ -76,8 +79,22 @@ public class Turret{
         run(headingRateRadPerSec);
     }
 
-    public void aimAtHive(Pose robot, double headingRateRadPerSec, TurretConstants.Alliance alliance){
-        aim(robot, getHive(alliance), headingRateRadPerSec);
+    public Pose pickGoal(Pose robot, TurretConstants.Alliance alliance){
+        Pose[] g = getGoals(alliance);
+        double y = TurretFieldXY(robot)[1];
+
+        if (currentGoal < 0){
+            currentGoal = y < GOAL_SWITCH_Y ? 0 : 1;          // 0 = lower, 1 = upper
+        } else if (currentGoal == 0 && y > GOAL_SWITCH_Y + GOAL_SWITCH_MARGIN){
+            currentGoal = 1;
+        } else if (currentGoal == 1 && y < GOAL_SWITCH_Y - GOAL_SWITCH_MARGIN){
+            currentGoal = 0;
+        }
+        return g[currentGoal];
+    }
+
+    public void aimAtGoal(Pose robot, double headingRateRadPerSec, TurretConstants.Alliance alliance){
+        aim(robot, pickGoal(robot, alliance), headingRateRadPerSec);
     }
     public void holdAngle(double robotRelativeRadians){
         targetRad = wrap(robotRelativeRadians);

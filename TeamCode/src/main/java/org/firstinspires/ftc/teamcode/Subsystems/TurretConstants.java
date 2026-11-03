@@ -6,11 +6,19 @@ public class TurretConstants {
     public enum Alliance{RED,BLUE
     }
     public static boolean ENCODER_REVERSED = false;
-    public static final Pose RED_HIVE = new Pose (72,60);
-    public static final Pose BLUE_HIVE = new Pose (72,84);
-    public static Pose getHive(Alliance alliance){
-        return alliance == Alliance.RED ? RED_HIVE : BLUE_HIVE;
+    public static final Pose RED_GOAL_A  = new Pose(60, 55);   // red lower
+    public static final Pose RED_GOAL_B  = new Pose(60, 85);   // red upper
+    public static final Pose BLUE_GOAL_A = new Pose(86, 55);   // blue lower
+    public static final Pose BLUE_GOAL_B = new Pose(86, 85);   // blue upper
+
+    public static Pose[] getGoals(Alliance alliance){
+        return alliance == Alliance.RED
+                ? new Pose[]{RED_GOAL_A, RED_GOAL_B}
+                : new Pose[]{BLUE_GOAL_A, BLUE_GOAL_B};
     }
+
+    public static final double GOAL_SWITCH_Y = 72;
+    public static final double GOAL_SWITCH_MARGIN = 4
     public static final boolean LIMIT_TRAVEL = false;
     public static final double MIN_ANGLE_RAD = Math.toRadians(-170);
     public static final double MAX_ANGLE_RAD = Math.toRadians(170);
