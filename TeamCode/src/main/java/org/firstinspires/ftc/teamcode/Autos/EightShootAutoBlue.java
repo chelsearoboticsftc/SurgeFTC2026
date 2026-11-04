@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
+import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
@@ -16,6 +17,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
+
 @Autonomous
 public class EightShootAutoBlue extends OpMode{
 
@@ -35,30 +38,30 @@ private shooter shooter;
         private final Pose point5Start = poseFactory.of(96, 21, 0);
         private final Pose point5 = poseFactory.of(84, 18, 270);
         private final Pose point6Start = poseFactory.of(84, 18, 270);
-        private final Pose point6 = poseFactory.of(132, 36, 270);
+        private final Pose endpoint = poseFactory.of(132, 36, 270);
 
         public Path path1() {
-            return Paths.line(start, path1).linear(start, path1);
+            return line(start, path1).linear(start, path1);
         }
 
         public Path path2() {
-            return Paths.line(point2Start, point2).linear(point2Start, point2);
+            return line(point2Start, point2).linear(point2Start, point2);
         }
 
         public Path path3() {
-            return Paths.line(point3Start, point3).linear(point3Start, point3);
+            return line(point3Start, point3).linear(point3Start, point3);
         }
 
         public Path path4() {
-            return Paths.line(point4Start, point4).linear(point4Start, point4);
+            return line(point4Start, point4).linear(point4Start, point4);
         }
 
         public Path path5() {
-            return Paths.line(point5Start, point5).linear(point5Start, point5);
+            return line(point5Start, point5).linear(point5Start, point5);
         }
 
-        public Path path6() {
-            return Paths.line(point6Start, point6).linear(point6Start, point6);
+        public Path path6() { return line(point6Start,endpoint).linear (point6Start,endpoint);
+
 
             }
     private CommandBuilder autoRoutine() {
@@ -72,7 +75,18 @@ private shooter shooter;
             );
     }
     @Override
-    public void start(){schedule(autoRoutine());}
+    public void init() {
+            Scheduler.reset();
+            follower = Constants.create(hardwareMap);
+            follower.setPose(start);
+            follower.update();
+        OpModeStorage.autonomousEndPose = endpoint;
+
+    }
+
+    @Override
+    public void start(){schedule(autoRoutine());
+        }
     @Override
     public void loop() {
             follower.update();
