@@ -18,7 +18,7 @@ public class TurretConstants {
     }
 
     public static final double GOAL_SWITCH_Y = 72;
-    public static final double GOAL_SWITCH_MARGIN = 4
+    public static final double GOAL_SWITCH_MARGIN = 4;
     public static final boolean LIMIT_TRAVEL = false;
     public static final double MIN_ANGLE_RAD = Math.toRadians(-170);
     public static final double MAX_ANGLE_RAD = Math.toRadians(170);
