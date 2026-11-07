@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 
+import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.CABLE_LIMIT_RAD;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.D_FILTER;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.ENCODER_REVERSED;
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.LIMIT_TRAVEL;
@@ -35,6 +36,8 @@ public class Turret{
     private double lastError_abs =  Math.PI;
     private double dFiltered = 0;
     private int currentGoal = -1;
+    private double lastTargetRad = 0, targetRateFiltered = 0, lastU = 0;
+    public double getLastU(){ return lastU; }
     public void turnTurret(double power) {
         TurretA.setPower(power);
         TurretB.setPower(power);
@@ -45,10 +48,16 @@ public class Turret{
     }
 
 
-    public Turret(HardwareMap hardwareMap){
+    public Turret(HardwareMap hardwareMap){ this(hardwareMap, true); }   // auto: zero at init
+
+    public Turret(HardwareMap hardwareMap, boolean resetEncoder){
         this.TurretA = hardwareMap.get(CRServo.class,"TurretA");
         this.TurretB = hardwareMap.get(CRServo.class,"TurretB");
         this.TurretEncoder = hardwareMap.get(DcMotorEx.class,"intakeMotor");
+        if (resetEncoder){
+            TurretEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        TurretEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         timer.reset();
     }
     public int getEncoderPose(){
@@ -114,23 +123,37 @@ public class Turret{
     private void run(double headingRate){
         double dt = Math.max(timer.seconds(), 1e-3);
         timer.reset();
+        double tgtDelta = wrap(targetRad - lastTargetRad);
+        lastTargetRad = targetRad;
+        double rawRate = Math.abs(tgtDelta) > Math.toRadians(30) ? 0 : tgtDelta / dt;
+        targetRateFiltered = 0.8 * targetRateFiltered + 0.2 * rawRate;
 
-        double angle = getAngleRadians();
-        double target = LIMIT_TRAVEL ? clamp(targetRad, MIN_ANGLE_RAD, MAX_ANGLE_RAD): targetRad;
-        double error = LIMIT_TRAVEL ? (target - angle) : wrap(target - angle);
+        double angle = TurretRadians();
+        double target = chooseTarget(targetRad, angle);
+        double error = target - angle;
 
         double DRaw = (error - lastError) / dt;
         lastError = error;
         dFiltered = D_FILTER * dFiltered + (1 - D_FILTER) * DRaw;
         lastError_abs = Math.abs(error);
 
+        boolean onTarget = Math.abs(error) <= ON_TARGET_TOL_RAD;
+        boolean moving = Math.abs(targetRateFiltered) > Math.toRadians(5);
+        boolean hold = onTarget && !moving;
         double u = 0;
-        if(Math.abs(error) > ON_TARGET_TOL_RAD){
-            u = kP * error + kD * dFiltered + kS * Math.signum(error) - kV_HEADING * headingRate;
+        double preload = 0;
+
+        if (!hold) {
+            double stiction = onTarget ? 0 : kS * Math.signum(error);   // no kS kick inside the band
+            u = kP * error + kD * dFiltered + stiction + kV_HEADING * targetRateFiltered;
+            u = clamp(u, -1.0, 1.0);
+        } else {
+            preload = PRELOAD;
         }
-        u = clamp(u, -(1 - PRELOAD), 1.0 - PRELOAD);
-        TurretA.setPower(u + PRELOAD);
-        TurretB.setPower(u - PRELOAD);
+        lastU = u;
+
+        TurretA.setPower(u + preload);
+        TurretB.setPower(u - preload);
     }
     public static double clamp(double v, double low, double high){
         return Math.max(low, Math.min(high, v));
@@ -144,6 +167,16 @@ public class Turret{
     public void stop(){
         TurretA.setPower(0);
         TurretB. setPower(0);
+    }
+    private static double chooseTarget(double wrappedTarget, double angle){
+        double best = Double.NaN, bestDist = Double.MAX_VALUE;
+        for (int k = -1; k <= 1; k++){
+            double cand = wrappedTarget + k * 2 * Math.PI;
+            if (Math.abs(cand) > CABLE_LIMIT_RAD) continue;
+            double d = Math.abs(cand - angle);
+            if (d < bestDist){ bestDist = d; best = cand; }
+        }
+        return Double.isNaN(best) ? clamp(wrappedTarget, -CABLE_LIMIT_RAD, CABLE_LIMIT_RAD) : best;
     }
 
 }

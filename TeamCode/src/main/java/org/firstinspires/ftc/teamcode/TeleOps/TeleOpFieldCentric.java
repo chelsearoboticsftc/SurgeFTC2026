@@ -38,7 +38,7 @@ public class TeleOpFieldCentric extends OpMode {
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
-        turret = new Turret(hardwareMap);
+        turret = new Turret(hardwareMap, false);
         alliance = TurretConstants.Alliance.RED;
     }
     @Override
@@ -103,12 +103,7 @@ public class TeleOpFieldCentric extends OpMode {
                 alliance = TurretConstants.Alliance.RED;
             }
         }
-        if (gamepad1.xWasPressed()) {
-            turret.turnTurret(1);
-        }
-        if(gamepad1.xWasReleased()) {
-            turret.turnTurret(0);
-        }
+
 
 
         limelight.update();
@@ -119,8 +114,17 @@ public class TeleOpFieldCentric extends OpMode {
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("TurretEncoder", turret.getTurretEncoder());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
+        telemetry.addData("Turret deg", Math.toDegrees(turret.getAngleRadians()));
+        telemetry.addData("Target deg", Math.toDegrees(turret.getTargetRad()));
+        telemetry.addData("Error deg", Math.toDegrees(Turret.wrap(turret.getTargetRad() - turret.getAngleRadians())));
+        telemetry.addData("On target", turret.isOnTarget());
+        telemetry.addData("Turret continuous deg", Math.toDegrees(turret.TurretRadians()));
+        telemetry.addData("Cable limit deg", Math.toDegrees(TurretConstants.CABLE_LIMIT_RAD));
         telemetry.update();
-        //turret.aimAtGoal(robotPose, follower.velocity().omega, alliance);
+        turret.aimAtGoal(robotPose, follower.velocity().omega, alliance);
+
+
     }
+
 
 }
