@@ -81,10 +81,10 @@ public class TeleOpFieldCentric extends OpMode {
             //intake.intakeToggle();
         //}
         if (gamepad2.b) {
-            shooter.GateToggleUp();
+            shooter.GateOn();
         }
         else {
-            shooter.GateToggleDown();
+            shooter.GateOff();
         }
         if (gamepad1.aWasPressed()) {
             flower.flowerToggleR();

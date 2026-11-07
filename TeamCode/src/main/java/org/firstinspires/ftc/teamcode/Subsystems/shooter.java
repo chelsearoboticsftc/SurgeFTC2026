@@ -10,15 +10,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 public class shooter {
     DcMotorEx shooterMotor;
-    Servo gateServo;
-
-    private double GateUp = shooterConstants.GateUp;
-    private int GateDown = shooterConstants.GateDown;
+    DcMotorEx gate;
     private double MotorSetPower = 1;
     public shooter(HardwareMap hardwareMap) {
 
         this.shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
-        this.gateServo = hardwareMap.get(Servo.class,"gateServo");
+        this.gate = hardwareMap.get(DcMotorEx.class,"gateMotor");
 
         shooterMotor.setZeroPowerBehavior(shooterConstants.SHOOTER_MOTOR_ZERO_POWER_BEHAVIOR);
 
@@ -38,10 +35,13 @@ public class shooter {
        public void init(){
 
     }
-    public void GateToggleDown() {
-        gateServo.setPosition(GateDown);
+    public void GateOn() {
+        gate.setPower(1);
     }
-    public void GateToggleUp() {
-        gateServo.setPosition(GateUp);
+    public void GateOff() {
+        gate.setPower(0);
+    }
+    public void GateReverse() {
+        gate.setPower(-1);
     }
 }
