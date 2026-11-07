@@ -41,7 +41,7 @@ public class Turret{
     public Turret(HardwareMap hardwareMap){
         this.TurretA = hardwareMap.get(CRServo.class,"TurretA");
         this.TurretB = hardwareMap.get(CRServo.class,"TurretB");
-        this.TurretEncoder = hardwareMap.get(DcMotorEx.class,"TurretEncoder");
+        this.TurretEncoder = hardwareMap.get(DcMotorEx.class,"intakeMotor");
         TurretEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         TurretEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         timer.reset();

@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Flower;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretConstants;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.drivetrain.DrivePowers;
@@ -19,8 +21,11 @@ public class TeleOpFieldCentric extends OpMode {
     private shooter shooter;
     private Limelight limelight;
     private Flower flower;
+    private Turret turret;
 
     private Follower follower;
+    private TurretConstants.Alliance alliance;
+
     @Override
     public void start(){
         follower.setPose(OpModeStorage.autonomousEndPose);
@@ -33,6 +38,7 @@ public class TeleOpFieldCentric extends OpMode {
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
+        turret = new Turret(hardwareMap);
     }
     @Override
     public void loop() {
@@ -86,6 +92,16 @@ public class TeleOpFieldCentric extends OpMode {
             flower.flowerToggleR();
             intake.intakeToggle();
         }
+        
+        //Temporary Team Swap Button
+        if (gamepad2.aWasPressed()) {
+            if (alliance == TurretConstants.Alliance.RED) {
+                alliance = TurretConstants.Alliance.BLUE;
+            }
+            else if (alliance == TurretConstants.Alliance.BLUE) {
+                alliance = TurretConstants.Alliance.RED;
+            }
+        }
 
         limelight.update();
         follower.manual(powers);
@@ -95,6 +111,7 @@ public class TeleOpFieldCentric extends OpMode {
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
         telemetry.update();
+        turret.aimAtGoal(robotPose, follower.velocity().omega, alliance);
     }
 
 }
