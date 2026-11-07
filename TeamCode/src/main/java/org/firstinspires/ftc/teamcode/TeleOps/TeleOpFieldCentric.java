@@ -28,7 +28,7 @@ public class TeleOpFieldCentric extends OpMode {
 
     @Override
     public void start(){
-        follower.setPose(OpModeStorage.autonomousEndPose);
+        follower.setPose(new Pose(8,8,0));
         follower.update();
     }
     @Override
@@ -39,6 +39,7 @@ public class TeleOpFieldCentric extends OpMode {
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
         turret = new Turret(hardwareMap);
+        alliance = TurretConstants.Alliance.RED;
     }
     @Override
     public void loop() {
@@ -102,6 +103,13 @@ public class TeleOpFieldCentric extends OpMode {
                 alliance = TurretConstants.Alliance.RED;
             }
         }
+        if (gamepad1.xWasPressed()) {
+            turret.turnTurret(1);
+        }
+        if(gamepad1.xWasReleased()) {
+            turret.turnTurret(0);
+        }
+
 
         limelight.update();
         follower.manual(powers);
@@ -109,9 +117,10 @@ public class TeleOpFieldCentric extends OpMode {
         Pose robotPose = follower.pose(); // returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
+        telemetry.addData("TurretEncoder", turret.getTurretEncoder());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
         telemetry.update();
-        turret.aimAtGoal(robotPose, follower.velocity().omega, alliance);
+        //turret.aimAtGoal(robotPose, follower.velocity().omega, alliance);
     }
 
 }

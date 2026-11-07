@@ -35,15 +35,20 @@ public class Turret{
     private double lastError_abs =  Math.PI;
     private double dFiltered = 0;
     private int currentGoal = -1;
+    public void turnTurret(double power) {
+        TurretA.setPower(power);
+        TurretB.setPower(power);
+    }
 
+    public double getTurretEncoder(){
+        return TurretEncoder.getCurrentPosition();
+    }
 
 
     public Turret(HardwareMap hardwareMap){
         this.TurretA = hardwareMap.get(CRServo.class,"TurretA");
         this.TurretB = hardwareMap.get(CRServo.class,"TurretB");
         this.TurretEncoder = hardwareMap.get(DcMotorEx.class,"intakeMotor");
-        TurretEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        TurretEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         timer.reset();
     }
     public int getEncoderPose(){
