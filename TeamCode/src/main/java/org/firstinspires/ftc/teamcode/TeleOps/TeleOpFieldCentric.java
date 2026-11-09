@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.Subsystems.Flower;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretConstants;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.drivetrain.DrivePowers;
@@ -19,11 +21,14 @@ public class TeleOpFieldCentric extends OpMode {
     private shooter shooter;
     private Limelight limelight;
     private Flower flower;
+    private Turret turret;
 
     private Follower follower;
+    private TurretConstants.Alliance alliance;
+
     @Override
     public void start(){
-        follower.setPose(OpModeStorage.autonomousEndPose);
+        follower.setPose(new Pose(8,8,0));
         follower.update();
     }
     @Override
@@ -33,6 +38,8 @@ public class TeleOpFieldCentric extends OpMode {
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
+        turret = new Turret(hardwareMap, false);
+        alliance = TurretConstants.Alliance.RED;
     }
     @Override
     public void loop() {
@@ -43,31 +50,37 @@ public class TeleOpFieldCentric extends OpMode {
                         gamepad1.right_stick_x,
                 follower.pose().heading()
         );
+
+        //Intake controls
         if (gamepad1.left_trigger > 0){
             telemetry.addLine("intake working");
             intake.setMotorPower(1);
         }
-        if (gamepad1.right_trigger > 0){
+        else if (gamepad1.right_trigger > 0){
             telemetry.addLine("intake working");
             intake.setMotorPower(-1);
         }
-        if (gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0){
-            intake.setMotorPower(0);}
+        else {
+            intake.setMotorPower(0);
+        }
 
+        //Index and gate controls
         if (gamepad2.left_trigger > 0) {
-
-
             intake.setIndexPower(1);
         }
-        if (gamepad2.left_trigger == 0){
-            intake.setIndexPower(0);
-        }
-        if (gamepad2.left_bumper) {
+        else if (gamepad2.left_bumper) {
             intake.setIndexPower(-1);
         }
-       // else {
-         //   intake.setIndexPower(0);
-        //}
+        else if (gamepad2.b) {
+            shooter.gateSetPower(1);
+            intake.setIndexPower(1);
+        }
+        else {
+            shooter.gateSetPower(0);
+            intake.setIndexPower(0);
+        }
+
+        //Shooter controls
         if (gamepad2.right_trigger > 0){
             shooter.SetShooterVelocity(1700);
         }
@@ -75,33 +88,23 @@ public class TeleOpFieldCentric extends OpMode {
             shooter.SetShooterVelocity(0);
         }
 
-
-        //if (gamepad2.yWasPressed()) {
-
-            //intake.intakeToggle();
-        //}
-        if (gamepad2.b) {
-            shooter.GateToggleUp();
-        }
-        else {
-            shooter.GateToggleDown();
-        }
+        //Flower controls
         if (gamepad1.aWasPressed()) {
             flower.flowerToggleR();
             intake.intakeToggle();
         }
-        //if (gamepad1.xWasPressed()) {
-          //  flower.flowerToggleL();
-       // }
-//        if (gamepad2.dpad_up) {
-//            flower.resetFlowerR();
-//        }
-//        if (gamepad2.dpad_right) {
-//            flower.resetFlowerL();
-//        }
-//        if (gamepad2.dpad_down) {
-//            intake.intakeServoReset();
-//        }
+        
+        //Temporary Team Swap Button
+        if (gamepad2.aWasPressed()) {
+            if (alliance == TurretConstants.Alliance.RED) {
+                alliance = TurretConstants.Alliance.BLUE;
+            }
+            else if (alliance == TurretConstants.Alliance.BLUE) {
+                alliance = TurretConstants.Alliance.RED;
+            }
+        }
+
+
 
         limelight.update();
         follower.manual(powers);
@@ -109,8 +112,19 @@ public class TeleOpFieldCentric extends OpMode {
         Pose robotPose = follower.pose(); // returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
+        telemetry.addData("TurretEncoder", turret.getTurretEncoder());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
+        telemetry.addData("Turret deg", Math.toDegrees(turret.getAngleRadians()));
+        telemetry.addData("Target deg", Math.toDegrees(turret.getTargetRad()));
+        telemetry.addData("Error deg", Math.toDegrees(Turret.wrap(turret.getTargetRad() - turret.getAngleRadians())));
+        telemetry.addData("On target", turret.isOnTarget());
+        telemetry.addData("Turret continuous deg", Math.toDegrees(turret.TurretRadians()));
+        telemetry.addData("Cable limit deg", Math.toDegrees(TurretConstants.CABLE_LIMIT_RAD));
         telemetry.update();
+        turret.aimAtGoal(robotPose, follower.velocity().omega, alliance);
+
+
     }
+
 
 }

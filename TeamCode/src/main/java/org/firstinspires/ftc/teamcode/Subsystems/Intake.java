@@ -16,8 +16,6 @@ public class Intake {
     Servo intakeServoR;
     Servo intakeServoL;
 
-    //private int intakeSetPosition = 0;
-    //private double intakePower = 0;
     public double intakeUp = IntakeConstants.intakeUp;
     public double intakeDown = IntakeConstants.intakeDown;
     public double intakeUp2 = IntakeConstants.intakeUp2;
@@ -41,6 +39,8 @@ public class Intake {
     public void setIndexPower(double power) {
         index.setPower(power);
     }
+
+    //Intake up and down code (using variables and positions from IntakeConstants)
     public void intakeToggle() {
         if (!intakeToggleVar) {
             intakeServoR.setPosition(intakeDown);
