@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import com.pedropathing.follower.Follower;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,21 @@ public class Limelight {
     public void stop(){
         limelight.stop();
 
+    }
+    private double getTagDistanceInches(int minId, int maxId){
+        LLResult result = limelight.getLatestResult();
+        if (result == null || !result.isValid()) return Double.NaN;
+
+        double best = Double.NaN;
+        for (LLResultTypes.FiducialResult f : result.getFiducialResults()){
+            int id = f.getFiducialId();
+            if (id < minId || id > maxId) continue;
+
+            Position pos = f.getTargetPoseCameraSpace().getPosition().toUnit(DistanceUnit.INCH);
+            double d = Math.sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
+            if (Double.isNaN(best) || d < best) best = d;
+        }
+        return best;
     }
 
 
