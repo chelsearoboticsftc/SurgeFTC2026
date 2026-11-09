@@ -24,8 +24,8 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 public class RedFar extends OpMode {
     //shoot once
     private Follower follower;
-    private shooter Shooter;
-    private Intake Intake;
+    private shooter shooter;
+    private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(27, 132, 90);
@@ -60,14 +60,16 @@ public class RedFar extends OpMode {
                 follow(follower,path1()),
                 waitMs(100),
                 follow(follower,path2()),
-                //instant(()->Shooter.GateToggleDown()),
                 waitMs(100),
-                instant(()->Intake.setIndexPower(1)),
-                instant(()->Shooter.SetShooterVelocity(1700)),
+                instant(()->shooter.SetShooterVelocity(1700)),
                 waitMs(1000),
-                instant(()->Shooter.SetShooterVelocity(0)),
-                instant(()->Intake.setIndexPower(0)),
-                //instant(()->Shooter.GateToggleUp()),
+                instant(()->intake.setIndexPower(1)),
+                instant(()->shooter.gateSetPower(1)),
+                waitMs(5000),
+                instant(()->intake.setIndexPower(0)),
+                instant(()->shooter.gateSetPower(0)),
+                instant(()->shooter.SetShooterVelocity(0)),
+                waitMs(100),
                 follow(follower,path3()),
                 waitMs(100),
                 follow(follower,path4()),
@@ -82,8 +84,8 @@ public class RedFar extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
-        Shooter = new shooter(hardwareMap);
-        Intake = new Intake(hardwareMap);
+        shooter = new shooter(hardwareMap);
+        intake = new Intake(hardwareMap);
         OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override

@@ -29,7 +29,7 @@ public class TurretConstants {
     public static final double kD = 0.1;
     public static final double kS = .09;
     public static final double kV_HEADING = 0.15 ;
-    public static final double PRELOAD = 0.03;
+    public static final double PRELOAD = 0.0;
     public static final double OFFSET_X = 0;
     public static final double OFFSET_Y = 0;
     public static final double CABLE_LIMIT_RAD = Math.toRadians(350);
