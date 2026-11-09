@@ -20,7 +20,6 @@ public class TeleOpFieldCentric extends OpMode {
     private shooter shooter;
     private Limelight limelight;
     private Flower flower;
-
     private Follower follower;
     @Override
     public void start(){
