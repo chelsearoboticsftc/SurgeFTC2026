@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Flower;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretConstants;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.drivetrain.DrivePowers;
@@ -20,6 +21,7 @@ public class TeleOpFieldCentric extends OpMode {
     private shooter shooter;
     private Limelight limelight;
     private Flower flower;
+    private Turret turret;
 
     private Follower follower;
     @Override
@@ -34,6 +36,7 @@ public class TeleOpFieldCentric extends OpMode {
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
+        turret = new Turret(hardwareMap, false);
     }
     @Override
     public void loop() {
@@ -54,7 +57,7 @@ public class TeleOpFieldCentric extends OpMode {
             telemetry.addLine("intake working");
             intake.setMotorPower(-1);
         }
-        else {
+        if (gamepad1.left_trigger <= 0 && !gamepad2.b && gamepad1.right_trigger <= 0) {
             intake.setMotorPower(0);
         }
 
@@ -68,6 +71,7 @@ public class TeleOpFieldCentric extends OpMode {
         else if (gamepad2.b) {
             shooter.gateSetPower(1);
             intake.setIndexPower(1);
+            intake.setMotorPower(1);
         }
         else {
             shooter.gateSetPower(0);
@@ -76,7 +80,7 @@ public class TeleOpFieldCentric extends OpMode {
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1700);
+            shooter.SetShooterVelocity(1400);
         }
         else {
             shooter.SetShooterVelocity(0);
@@ -96,6 +100,16 @@ public class TeleOpFieldCentric extends OpMode {
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
         telemetry.update();
+        telemetry.addData("TurretEncoder", turret.getTurretEncoder());
+        telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
+        telemetry.addData("Turret deg", Math.toDegrees(turret.getAngleRadians()));
+        telemetry.addData("Target deg", Math.toDegrees(turret.getTargetRad()));
+        telemetry.addData("Error deg", Math.toDegrees(Turret.wrap(turret.getTargetRad() - turret.getAngleRadians())));
+        telemetry.addData("On target", turret.isOnTarget());
+        telemetry.addData("Turret continuous deg", Math.toDegrees(turret.TurretRadians()));
+        telemetry.addData("Cable limit deg", Math.toDegrees(TurretConstants.CABLE_LIMIT_RAD));
+        telemetry.update();
+        turret.aimAtGoal(robotPose, follower.velocity().omega, TurretConstants.Alliance.RED);
     }
 
 }
