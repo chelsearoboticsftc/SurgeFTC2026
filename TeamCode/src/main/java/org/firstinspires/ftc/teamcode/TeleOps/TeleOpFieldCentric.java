@@ -36,7 +36,7 @@ public class TeleOpFieldCentric extends OpMode {
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
-        turret = new Turret(hardwareMap, false);
+        turret = new Turret(hardwareMap, true);
     }
     @Override
     public void loop() {
@@ -52,29 +52,29 @@ public class TeleOpFieldCentric extends OpMode {
         if (gamepad1.left_trigger > 0){
             telemetry.addLine("intake working");
             intake.setMotorPower(1);
+            intake.setIndexPower(1);
         }
         else if (gamepad1.right_trigger > 0){
             telemetry.addLine("intake working");
             intake.setMotorPower(-1);
         }
-        if (gamepad1.left_trigger <= 0 && !gamepad2.b && gamepad1.right_trigger <= 0) {
+        if (gamepad1.left_trigger <= 0 && gamepad2.left_trigger <= 0 && gamepad1.right_trigger <= 0) {
             intake.setMotorPower(0);
         }
 
         //Index and gate controls
         if (gamepad2.left_trigger > 0) {
-            intake.setIndexPower(1);
-        }
-        else if (gamepad2.left_bumper) {
-            intake.setIndexPower(-1);
-        }
-        else if (gamepad2.b) {
             shooter.gateSetPower(1);
             intake.setIndexPower(1);
             intake.setMotorPower(1);
         }
+        else if (gamepad2.left_bumper) {
+            intake.setIndexPower(-1);
+        }
         else {
             shooter.gateSetPower(0);
+        }
+        if (gamepad2.left_trigger <= 0 && gamepad1.left_trigger <= 0 && !gamepad2.left_bumper) {
             intake.setIndexPower(0);
         }
 
@@ -88,8 +88,10 @@ public class TeleOpFieldCentric extends OpMode {
 
         //Flower controls
         if (gamepad1.aWasPressed()) {
+            flower.flowerToggleL();
+        }
+        if (gamepad1.bWasPressed()) {
             flower.flowerToggleR();
-            intake.intakeToggle();
         }
 
         limelight.update();
@@ -99,7 +101,6 @@ public class TeleOpFieldCentric extends OpMode {
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
-        telemetry.update();
         telemetry.addData("TurretEncoder", turret.getTurretEncoder());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
         telemetry.addData("Turret deg", Math.toDegrees(turret.getAngleRadians()));
