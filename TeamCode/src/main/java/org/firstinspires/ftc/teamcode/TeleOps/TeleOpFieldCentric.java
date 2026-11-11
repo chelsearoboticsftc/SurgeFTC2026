@@ -77,6 +77,9 @@ public class TeleOpFieldCentric extends OpMode {
         if (gamepad2.left_trigger <= 0 && gamepad1.left_trigger <= 0 && !gamepad2.left_bumper) {
             intake.setIndexPower(0);
         }
+        if(gamepad1.dpadUpWasPressed()){
+            follower.setPose(new Pose(8,8,0));
+        }
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){

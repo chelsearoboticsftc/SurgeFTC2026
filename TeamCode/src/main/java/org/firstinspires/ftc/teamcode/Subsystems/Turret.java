@@ -329,7 +329,7 @@ public class Turret {
             double d = -kD * filteredVelocity;
 
             // Static friction compensation.
-            double s = kS * Math.signum(error);
+            double s = kS * clamp(error / Math.toRadians(3), -1, 1);;
 
             // Robot motion compensation.
             double ff = kV_HEADING * ffRate;

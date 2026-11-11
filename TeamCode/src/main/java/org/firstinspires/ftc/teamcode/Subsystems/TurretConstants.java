@@ -36,10 +36,10 @@ public class TurretConstants {
     // PID
     // =====================================
 
-    public static final double kP = 1.0;
-    public static final double kD = 0.10;
-    public static final double kS = 0.06;
-    public static final double kV_HEADING = 0.15;
+    public static final double kP = 1.2;
+    public static final double kD = 0.05;
+    public static final double kS = 0.1;
+    public static final double kV_HEADING = 0.25;
 
     // =====================================
     // FILTERING
@@ -51,8 +51,8 @@ public class TurretConstants {
     // POWER LIMITS
     // =====================================
 
-    public static final double MAX_POWER = 0.9;
-    public static final double MAX_ACCEL = 4.0;
+    public static final double MAX_POWER = 1;
+    public static final double MAX_ACCEL = 6.0;
 
 
     // =====================================
@@ -63,7 +63,7 @@ public class TurretConstants {
             Math.toRadians(270);
 
     public static final double HOLD_TOL_RAD =
-            Math.toRadians(0.5);
+            Math.toRadians(0.25);
 
     public static final double ON_TARGET_TOL_RAD =
             Math.toRadians(2);
