@@ -91,10 +91,7 @@ public class TeleOpFieldCentric extends OpMode {
 
         //Flower controls
         if (gamepad1.aWasPressed()) {
-            flower.flowerToggleL();
-        }
-        if (gamepad1.bWasPressed()) {
-            flower.flowerToggleR();
+            flower.flowerToggle();
         }
 
         limelight.update();

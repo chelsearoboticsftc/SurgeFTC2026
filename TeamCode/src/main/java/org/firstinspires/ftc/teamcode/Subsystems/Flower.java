@@ -13,25 +13,15 @@ public class Flower {
         this.flowerServoL = hardwareMap.get(Servo.class,"flowerServo2");
     }
     //Swaps the right flower servo from up to down and down to up
-    public void flowerToggleR() {
+    public void flowerToggle() {
         if (!FlowerConstants.flowerToggleVar) {
-            flowerServoR.setPosition(FlowerConstants.flowerDown);
+            flowerServoR.setPosition(FlowerConstants.flowerDownR);
+            flowerServoL.setPosition(FlowerConstants.flowerDownL);
             FlowerConstants.flowerToggleVar = true;
-        }
-        else {
-            flowerServoR.setPosition(FlowerConstants.flowerUp);
+        } else {
+            flowerServoR.setPosition(FlowerConstants.flowerUpR);
+            flowerServoL.setPosition(FlowerConstants.flowerUpL);
             FlowerConstants.flowerToggleVar = false;
-        }
-    }
-    //Swaps the left flower servo from up to down and down to up
-    public void flowerToggleL() {
-        if (!FlowerConstants.flowerToggleVar2) {
-            flowerServoL.setPosition(FlowerConstants.flowerDown);
-            FlowerConstants.flowerToggleVar2 = true;
-        }
-        else {
-            flowerServoL.setPosition(FlowerConstants.flowerUp);
-            FlowerConstants.flowerToggleVar2 = false;
         }
     }
     //Resets the flower servos to down
