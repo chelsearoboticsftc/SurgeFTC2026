@@ -28,9 +28,7 @@ public class RedThreeShoots extends OpMode {
     private Intake intake;
     private Flower flower;
     private final PoseFactory poseFactory = PoseFactory.degrees();
-
     private final Pose path2 = poseFactory.of(63, 9, 90);
-    private final Pose path1Start = poseFactory.of(63, 9, 270);
     private final Pose path1 = poseFactory.of(63.0627, 26.3504, 270);
     private final Pose point2 = poseFactory.of(41.8587, 9.0957, 180);
     private final Pose point3 = poseFactory.of(12, 9, 180);
