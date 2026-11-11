@@ -97,20 +97,71 @@ public class TeleOpFieldCentric extends OpMode {
         limelight.update();
         follower.manual(powers);
         follower.update();
-        Pose robotPose = follower.pose(); // returns a Pose object
+        Pose robotPose = follower.pose();
+        turret.aimAtGoal(
+                robotPose,
+
+                follower.velocity().omega,
+
+                follower.velocity().vx,
+
+                follower.velocity().vy,
+
+                TurretConstants.Alliance.RED
+        );// returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
-        telemetry.addData("TurretEncoder", turret.getTurretEncoder());
-        telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
-        telemetry.addData("Turret deg", Math.toDegrees(turret.getAngleRadians()));
-        telemetry.addData("Target deg", Math.toDegrees(turret.getTargetRad()));
-        telemetry.addData("Error deg", Math.toDegrees(Turret.wrap(turret.getTargetRad() - turret.getAngleRadians())));
-        telemetry.addData("On target", turret.isOnTarget());
-        telemetry.addData("Turret continuous deg", Math.toDegrees(turret.TurretRadians()));
-        telemetry.addData("Cable limit deg", Math.toDegrees(TurretConstants.CABLE_LIMIT_RAD));
+        // =====================================
+        // TURRET TELEMETRY
+        // =====================================
+
+        telemetry.addData(
+                "Turret Encoder",
+                turret.getTurretEncoder()
+        );
+
+        telemetry.addData(
+                "Turret Angle",
+                Math.toDegrees(turret.getAngleRadians())
+        );
+
+        telemetry.addData(
+                "Turret Target",
+                Math.toDegrees(turret.getTargetRad())
+        );
+
+        telemetry.addData(
+                "Turret Error",
+                Math.toDegrees(turret.getErrorRadians())
+        );
+
+        telemetry.addData(
+                "Turret Velocity",
+                Math.toDegrees(turret.getVelocity())
+        );
+
+        telemetry.addData(
+                "Turret Feedforward",
+                turret.getFeedforwardRate()
+        );
+
+        telemetry.addData(
+                "Turret Power",
+                turret.getLastU()
+        );
+
+        telemetry.addData(
+                "Turret On Target",
+                turret.isOnTarget()
+        );
+
+        telemetry.addData(
+                "Target Reachable",
+                turret.isTargetReachable()
+        );
         telemetry.update();
-        turret.aimAtGoal(robotPose, follower.velocity().omega, TurretConstants.Alliance.RED);
+
     }
 
 }
