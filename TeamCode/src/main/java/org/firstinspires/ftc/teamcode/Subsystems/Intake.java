@@ -13,7 +13,7 @@ public class Intake {
     //Example declare a DcMotorEx object as part of this class called 'motorName'
     DcMotorEx intake;
     DcMotorEx index;
-    Servo intakeServoR;
+    //Servo intakeServoR;
     Servo intakeServoL;
 
     public double intakeUp = IntakeConstants.intakeUp;
@@ -29,8 +29,8 @@ public class Intake {
         this.index = hardwareMap.get(DcMotorEx.class,"indexMotor");
         index.setZeroPowerBehavior(IntakeConstants.INDEX_ZERO_POWER_BEHAVIOR);
         index.setDirection(IntakeConstants.INDEX_DIRECTION);
-        this.intakeServoR = hardwareMap.get(Servo.class,"intakeServo");
-        this.intakeServoL = hardwareMap.get(Servo.class,"intakeServo2");
+        //this.intakeServoR = hardwareMap.get(Servo.class,"intakeServo2");
+        this.intakeServoL = hardwareMap.get(Servo.class,"intakeServo");
     }
 
     public void setMotorPower(double power) {
@@ -43,18 +43,18 @@ public class Intake {
     //Intake up and down code (using variables and positions from IntakeConstants)
     public void intakeToggle() {
         if (!intakeToggleVar) {
-            intakeServoR.setPosition(intakeDown);
-            intakeServoL.setPosition(intakeDown2);
+            //intakeServoR.setPosition(intakeDown);
+            intakeServoL.setPosition(intakeDown);
             intakeToggleVar = true;
         }
         else {
-            intakeServoR.setPosition(intakeUp);
-            intakeServoL.setPosition(intakeUp2);
+            //intakeServoR.setPosition(intakeUp);
+            intakeServoL.setPosition(intakeUp);
             intakeToggleVar = false;
         }
     }
     public void intakeServoReset() {
-        intakeServoR.setPosition(0);
+        //intakeServoR.setPosition(0);
         intakeServoL.setPosition(0);
         intakeToggleVar = true;
     }

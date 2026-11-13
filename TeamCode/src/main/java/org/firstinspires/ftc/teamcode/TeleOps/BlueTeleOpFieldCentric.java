@@ -83,7 +83,7 @@ public class BlueTeleOpFieldCentric extends OpMode {
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1400);
+            shooter.SetShooterVelocity(1450);
         }
         else {
             shooter.SetShooterVelocity(0);
@@ -98,17 +98,17 @@ public class BlueTeleOpFieldCentric extends OpMode {
         follower.manual(powers);
         follower.update();
         Pose robotPose = follower.pose();
-        turret.aimAtGoal(
-                robotPose,
-
-                follower.velocity().omega,
-
-                follower.velocity().vx,
-
-                follower.velocity().vy,
-
-                TurretConstants.Alliance.BLUE
-        );// returns a Pose object
+//        turret.aimAtGoal(
+//                robotPose,
+//
+//                follower.velocity().omega,
+//
+//                follower.velocity().vx,
+//
+//                follower.velocity().vy,
+//
+//                TurretConstants.Alliance.BLUE
+//        );// returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));

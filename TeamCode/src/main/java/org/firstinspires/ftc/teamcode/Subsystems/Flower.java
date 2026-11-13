@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.intellij.lang.annotations.Flow;
-
 public class Flower {
     Servo flowerServoR;
     Servo flowerServoL;
+    private double rightServoPos = 0;
+    private double leftServoPos = 0;
     public Flower(HardwareMap hardwareMap) {
         this.flowerServoR = hardwareMap.get(Servo.class,"flowerServo");
         this.flowerServoL = hardwareMap.get(Servo.class,"flowerServo2");
@@ -26,11 +26,25 @@ public class Flower {
     }
     //Resets the flower servos to down
     public void resetFlowerR() {
-        flowerServoR.setPosition(0.2);
+        flowerServoR.setPosition(0);
         FlowerConstants.flowerToggleVar = false;
     }
     public void resetFlowerL() {
-        flowerServoL.setPosition(0.2);
+        flowerServoL.setPosition(0);
         FlowerConstants.flowerToggleVar2 = false;
+    }
+    public void rightFlowerPosSwap(double position) {
+        flowerServoR.setPosition(position);
+    }
+    public void leftFlowerPosSwap(double position) {
+        flowerServoL.setPosition(position);
+    }
+    public double getRightFlowerPos() {
+        double rightServoPos = flowerServoR.getPosition();
+        return rightServoPos;
+    }
+    public double getLeftFlowerPos() {
+        double leftServoPos = flowerServoL.getPosition();
+        return leftServoPos;
     }
 }

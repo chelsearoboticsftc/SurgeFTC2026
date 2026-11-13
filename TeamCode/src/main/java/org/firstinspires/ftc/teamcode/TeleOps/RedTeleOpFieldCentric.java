@@ -68,13 +68,17 @@ public class RedTeleOpFieldCentric extends OpMode {
             intake.setIndexPower(1);
             intake.setMotorPower(1);
         }
-        else if (gamepad2.left_bumper) {
-            intake.setIndexPower(-1);
+        else if (gamepad2.b) {
+            shooter.gateSetPower(-1);
         }
         else {
             shooter.gateSetPower(0);
         }
-        if (gamepad2.left_trigger <= 0 && gamepad1.left_trigger <= 0 && !gamepad2.left_bumper) {
+        if (gamepad2.left_bumper) {
+            intake.setIndexPower(-1);
+        }
+
+        if (gamepad2.left_trigger == 0 && gamepad1.left_trigger == 0 && !gamepad2.left_bumper) {
             intake.setIndexPower(0);
         }
         if(gamepad1.dpadUpWasPressed()){
@@ -83,7 +87,10 @@ public class RedTeleOpFieldCentric extends OpMode {
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1400);
+            shooter.SetShooterVelocity(1450);
+        }
+        else if (gamepad2.a) {
+            shooter.SetShooterVelocity(-900);
         }
         else {
             shooter.SetShooterVelocity(0);
@@ -98,17 +105,17 @@ public class RedTeleOpFieldCentric extends OpMode {
         follower.manual(powers);
         follower.update();
         Pose robotPose = follower.pose();
-        turret.aimAtGoal(
-                robotPose,
-
-                follower.velocity().omega,
-
-                follower.velocity().vx,
-
-                follower.velocity().vy,
-
-                TurretConstants.Alliance.RED
-        );// returns a Pose object
+//        turret.aimAtGoal(
+//                robotPose,
+//
+//                follower.velocity().omega,
+//
+//                follower.velocity().vx,
+//
+//                follower.velocity().vy,
+//
+//                TurretConstants.Alliance.RED
+//        );// returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));

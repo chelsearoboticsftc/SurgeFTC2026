@@ -98,17 +98,17 @@ public class TeleOpFieldCentric extends OpMode {
         follower.manual(powers);
         follower.update();
         Pose robotPose = follower.pose();
-        turret.aimAtGoal(
-                robotPose,
-
-                follower.velocity().omega,
-
-                follower.velocity().vx,
-
-                follower.velocity().vy,
-
-                TurretConstants.Alliance.RED
-        );// returns a Pose object
+//        turret.aimAtGoal(
+//                robotPose,
+//
+//                follower.velocity().omega,
+//
+//                follower.velocity().vx,
+//
+//                follower.velocity().vy,
+//
+//                TurretConstants.Alliance.RED
+//        );// returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
