@@ -28,6 +28,7 @@ public class BlueTeleOpFieldCentric extends OpMode {
     public void start(){
         follower.setPose(OpModeStorage.autonomousEndPose);
         follower.update();
+        intake.intakeServoDown();
     }
     @Override
     public void init() {
@@ -37,6 +38,7 @@ public class BlueTeleOpFieldCentric extends OpMode {
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
         turret = new Turret(hardwareMap, false);
+        intake.intakeServoUp();
     }
     @Override
     public void loop() {
@@ -68,11 +70,14 @@ public class BlueTeleOpFieldCentric extends OpMode {
             intake.setIndexPower(1);
             intake.setMotorPower(1);
         }
-        else if (gamepad2.left_bumper) {
-            intake.setIndexPower(-1);
+        else if (gamepad2.b) {
+            shooter.gateSetPower(-1);
         }
         else {
             shooter.gateSetPower(0);
+        }
+        if (gamepad2.left_bumper) {
+            intake.setIndexPower(-1);
         }
         if (gamepad2.left_trigger <= 0 && gamepad1.left_trigger <= 0 && !gamepad2.left_bumper) {
             intake.setIndexPower(0);
@@ -84,6 +89,9 @@ public class BlueTeleOpFieldCentric extends OpMode {
         //Shooter controls
         if (gamepad2.right_trigger > 0){
             shooter.SetShooterVelocity(1450);
+        }
+        else if (gamepad2.a) {
+            shooter.SetShooterVelocity(-900);
         }
         else {
             shooter.SetShooterVelocity(0);
