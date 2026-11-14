@@ -26,12 +26,18 @@ public class Flower {
     }
     //Resets the flower servos to down
     public void resetFlowerR() {
-        flowerServoR.setPosition(0);
+        flowerServoR.setPosition(FlowerConstants.flowerUpL);
         FlowerConstants.flowerToggleVar = false;
     }
     public void resetFlowerL() {
-        flowerServoL.setPosition(0);
+        flowerServoL.setPosition(FlowerConstants.flowerUpR);
         FlowerConstants.flowerToggleVar2 = false;
+    }
+    public void resetBothFlower() {
+        flowerServoL.setPosition(FlowerConstants.flowerUpR);
+        FlowerConstants.flowerToggleVar2 = false;
+        flowerServoR.setPosition(FlowerConstants.flowerUpL);
+        FlowerConstants.flowerToggleVar = false;
     }
     public void rightFlowerPosSwap(double position) {
         flowerServoR.setPosition(position);

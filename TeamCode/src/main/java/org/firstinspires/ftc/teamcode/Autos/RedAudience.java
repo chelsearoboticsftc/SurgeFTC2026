@@ -54,7 +54,7 @@ public class RedAudience extends OpMode {
 
     private Command autoRoutine() {
         return sequential(
-                instant(()->shooter.SetShooterVelocity(1800)),
+                instant(()->shooter.SetShooterVelocity(1375)),
                 waitMs(1000),
                 instant(()->shooter.gateSetPower(1)),
                 instant(()->intake.setIndexPower(1)),

@@ -44,7 +44,7 @@ public class BlueAudienceWait extends OpMode {
     private Command autoRoutine() {
         return sequential(
                 waitMs(10000),
-                instant(()->shooter.SetShooterVelocity(1750)),
+                instant(()->shooter.SetShooterVelocity(1375)),
                 waitMs(1000),
                 instant(()->intake.setIndexPower(1)),
                 instant(()->shooter.gateSetPower(1)),

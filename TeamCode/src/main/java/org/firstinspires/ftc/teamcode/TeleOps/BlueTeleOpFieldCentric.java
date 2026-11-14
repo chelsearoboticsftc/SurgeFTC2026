@@ -22,13 +22,15 @@ public class BlueTeleOpFieldCentric extends OpMode {
     private Limelight limelight;
     private Flower flower;
     private Turret turret;
+    private boolean intakeToggleVar = true;
 
     private Follower follower;
     @Override
     public void start(){
         follower.setPose(OpModeStorage.autonomousEndPose);
+        follower.setHeading(Math.toRadians(180));
         follower.update();
-        intake.intakeServoDown();
+        intake.setIntakeServoL(0.55);
     }
     @Override
     public void init() {
@@ -37,8 +39,7 @@ public class BlueTeleOpFieldCentric extends OpMode {
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
-        turret = new Turret(hardwareMap, false);
-        intake.intakeServoUp();
+        turret = new Turret(hardwareMap, true);
     }
     @Override
     public void loop() {
@@ -88,7 +89,7 @@ public class BlueTeleOpFieldCentric extends OpMode {
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1450);
+            shooter.SetShooterVelocity(1325);
         }
         else if (gamepad2.a) {
             shooter.SetShooterVelocity(-900);
@@ -96,10 +97,29 @@ public class BlueTeleOpFieldCentric extends OpMode {
         else {
             shooter.SetShooterVelocity(0);
         }
+        if(gamepad1.backWasPressed()){
+            intake.intakeToggle();
+        }
+//        if(gamepad1.xWasPressed()){
+//            intake.setIntakeServoL(0.55);
+//            intakeToggleVar = true;
+//        }
+//        if (gamepad1.yWasPressed()) {
+//            intake.setIntakeServoL(1);
+//            intakeToggleVar = false;
+//        }
 
         //Flower controls
         if (gamepad1.aWasPressed()) {
-            flower.flowerToggle();
+            flower.flowerToggle(); //Starts up
+            if (!intakeToggleVar) {
+                intake.setIntakeServoL(0.55); //Down
+                intakeToggleVar = true;
+            }
+            else {
+                intake.setIntakeServoL(1); //Up
+                intakeToggleVar = false;
+            }
         }
 
         limelight.update();
@@ -115,7 +135,7 @@ public class BlueTeleOpFieldCentric extends OpMode {
 //
 //                follower.velocity().vy,
 //
-//                TurretConstants.Alliance.BLUE
+//                TurretConstants.Alliance.RED
 //        );// returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());

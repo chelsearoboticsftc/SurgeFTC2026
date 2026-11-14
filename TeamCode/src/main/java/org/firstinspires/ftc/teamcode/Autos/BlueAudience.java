@@ -69,7 +69,7 @@ public class BlueAudience extends OpMode {
                 follow(follower, path2()),
                 follow(follower, path3()),
                 follow(follower, path4()),
-                instant(()->shooter.SetShooterVelocity(1800)),
+                instant(()->shooter.SetShooterVelocity(1375)),
                 waitMs(1000),
                 instant(()->shooter.gateSetPower(1)),
                 instant(()->intake.setIndexPower(1)),

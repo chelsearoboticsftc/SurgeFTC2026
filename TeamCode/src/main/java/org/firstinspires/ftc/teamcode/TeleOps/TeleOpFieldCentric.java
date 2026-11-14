@@ -22,12 +22,14 @@ public class TeleOpFieldCentric extends OpMode {
     private Limelight limelight;
     private Flower flower;
     private Turret turret;
+    private boolean intakeToggleVar = true;
 
     private Follower follower;
     @Override
     public void start(){
         follower.setPose(OpModeStorage.autonomousEndPose);
         follower.update();
+        intake.setIntakeServoL(0.55);
     }
     @Override
     public void init() {
@@ -68,11 +70,14 @@ public class TeleOpFieldCentric extends OpMode {
             intake.setIndexPower(1);
             intake.setMotorPower(1);
         }
-        else if (gamepad2.left_bumper) {
-            intake.setIndexPower(-1);
+        else if (gamepad2.b) {
+            shooter.gateSetPower(-1);
         }
         else {
             shooter.gateSetPower(0);
+        }
+        if (gamepad2.left_bumper) {
+            intake.setIndexPower(-1);
         }
         if (gamepad2.left_trigger <= 0 && gamepad1.left_trigger <= 0 && !gamepad2.left_bumper) {
             intake.setIndexPower(0);
@@ -83,15 +88,37 @@ public class TeleOpFieldCentric extends OpMode {
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1400);
+            shooter.SetShooterVelocity(1325);
+        }
+        else if (gamepad2.a) {
+            shooter.SetShooterVelocity(-900);
         }
         else {
             shooter.SetShooterVelocity(0);
         }
+        if(gamepad1.backWasPressed()){
+            intake.intakeToggle();
+        }
+//        if(gamepad1.xWasPressed()){
+//            intake.setIntakeServoL(0.55);
+//            intakeToggleVar = true;
+//        }
+//        if (gamepad1.yWasPressed()) {
+//            intake.setIntakeServoL(1);
+//            intakeToggleVar = false;
+//        }
 
         //Flower controls
         if (gamepad1.aWasPressed()) {
-            flower.flowerToggle();
+            flower.flowerToggle(); //Starts up
+            if (!intakeToggleVar) {
+                intake.setIntakeServoL(0.55); //Down
+                intakeToggleVar = true;
+            }
+            else {
+                intake.setIntakeServoL(1); //Up
+                intakeToggleVar = false;
+            }
         }
 
         limelight.update();

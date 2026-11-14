@@ -61,7 +61,7 @@ public class RedFar extends OpMode {
                 waitMs(100),
                 follow(follower,path2()),
                 waitMs(100),
-                instant(()->shooter.SetShooterVelocity(1700)),
+                instant(()->shooter.SetShooterVelocity(1375)),
                 waitMs(1000),
                 instant(()->intake.setIndexPower(1)),
                 instant(()->shooter.gateSetPower(1)),
