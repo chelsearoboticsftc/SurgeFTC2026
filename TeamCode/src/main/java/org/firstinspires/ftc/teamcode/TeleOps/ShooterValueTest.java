@@ -207,6 +207,10 @@ public class ShooterValueTest extends OpMode {
         follower.manual(powers);
         follower.update();
         Pose robotPose = follower.pose(); // returns a Pose object
+        // Same as the match TeleOp, so you can record shooting spots from this OpMode too
+        telemetry.addData("Robot X", robotPose.x());
+        telemetry.addData("Robot Y", robotPose.y());
+        telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
         // TODO BUG HUNT: something is wrong with the next two lines.
         // fix them, then remove these comments
         telemetry.addData("Left Flower Servo Position", flower.getRightFlowerPos());
