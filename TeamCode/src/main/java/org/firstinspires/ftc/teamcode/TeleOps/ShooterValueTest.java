@@ -32,6 +32,10 @@ public class ShooterValueTest extends OpMode {
     private static final double TEST_VELOCITY = 1325;
     // Slower than this (ticks/s) counts as "stopped", so a spin-up test can start.
     private static final double STOPPED_VELOCITY = 50;
+    // Shooter in reverse to clear a jam (same as the match TeleOp's gamepad2 A)
+    private static final double UNJAM_VELOCITY = -900;
+
+    private boolean rightTriggerWasDown = false;    // so we can tell when the trigger is first pressed or let go
 
     private final ElapsedTime spinUpTimer = new ElapsedTime();
     private boolean measuringSpinUp = false;        // true from GO until the shooter first reaches speed
@@ -41,9 +45,9 @@ public class ShooterValueTest extends OpMode {
     private double highestVelocity = 0;
 
     private VoltageSensor battery;
-    private double batteryAtGo = 0;                 // battery voltage when GO was last pressed
+    private double batteryAtStart = 0;                 // battery voltage when the last test started
 
-    // ===== PIDF tuning (gamepad2) =====
+    // ===== PIDF tuning (gamepad2, only while holding BACK) =====
     private static final double F_STEP = 0.25;
     private static final double P_STEP = 0.5;
     // kP and kF are the P and F numbers from PIDF ("k" = a constant we multiply by).
@@ -66,7 +70,7 @@ public class ShooterValueTest extends OpMode {
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
         battery = hardwareMap.voltageSensor.iterator().next();
-        batteryAtGo = battery.getVoltage();
+        batteryAtStart = battery.getVoltage();
     }
     @Override
     public void loop() {
@@ -106,32 +110,38 @@ public class ShooterValueTest extends OpMode {
             rightFlowerPos = rightFlowerPos + 0.1;
         }
 
-        // ===== Measuring tool (gamepad2) =====
+        // ===== gamepad2: same controls as the match TeleOp, plus the measuring tool =====
         // Read the shooter once per loop, and use these same answers everywhere below.
         double actualVelocity = shooter.getVelocity();
         boolean atSpeed = shooter.isAtSpeed();
 
-        // GO: jump straight to the test speed and start the spin-up stopwatch
+        // Right trigger: HOLD to spin up, like the match TeleOp. Pressing it also starts a test.
+        boolean rightTriggerDown = gamepad2.right_trigger > 0;
+        if (rightTriggerDown && !rightTriggerWasDown) {
+            startShooterTest(actualVelocity);   // the trigger was just pressed
+        }
+        if (!rightTriggerDown && rightTriggerWasDown) {
+            stopShooter();                      // the trigger was just let go
+        }
+        rightTriggerWasDown = rightTriggerDown;
+
+        // dpad up / down: GO / STOP without holding anything (for longer tests, like wobble)
         if (gamepad2.dpadUpWasPressed()) {
-            shooter.SetShooterVelocity(TEST_VELOCITY);
-            batteryAtGo = battery.getVoltage();
-            if (actualVelocity < STOPPED_VELOCITY) {
-                spinUpTimer.reset();
-                measuringSpinUp = true;
-                spinUpResult = "measuring...";
-            } else {
-                // A fair spin-up test has to start from a stopped shooter
-                spinUpResult = "not measured: STOP and wait for Actual = 0";
-            }
+            startShooterTest(actualVelocity);
         }
-
-        // STOP (the last spin-up result stays on screen so you can write it down)
         if (gamepad2.dpadDownWasPressed()) {
-            shooter.SetShooterVelocity(0);
-            measuringSpinUp = false;
+            stopShooter();
         }
 
-        // If someone changes the target with gamepad1 mid-test, the spin-up time is no good
+        // A: HOLD to run the shooter in reverse and clear a jam, like the match TeleOp
+        if (gamepad2.aWasPressed()) {
+            shooter.SetShooterVelocity(UNJAM_VELOCITY);
+        }
+        if (gamepad2.aWasReleased()) {
+            stopShooter();
+        }
+
+        // If the target changes mid-test (gamepad1 +/- or unjam), the spin-up time is no good
         if (measuringSpinUp && shooter.getTargetVelocity() != TEST_VELOCITY) {
             measuringSpinUp = false;
             spinUpResult = "cancelled: target changed";
@@ -146,44 +156,63 @@ public class ShooterValueTest extends OpMode {
             highestVelocity = actualVelocity;
         }
 
-        // B: start a fresh Lowest/Highest record by hand
-        if (gamepad2.bWasPressed()) {
+        // dpad right: start a fresh Lowest/Highest record by hand
+        if (gamepad2.dpadRightWasPressed()) {
             lowestVelocity = actualVelocity;
             highestVelocity = actualVelocity;
         }
 
-        // Keep the record only while the shooter is supposed to be spinning
+        // Keep the record only while the shooter is supposed to be spinning forward
         if (shooter.getTargetVelocity() > 0) {
             lowestVelocity = Math.min(lowestVelocity, actualVelocity);
             highestVelocity = Math.max(highestVelocity, actualVelocity);
         }
 
-        // Feed: HOLD gamepad2 left trigger, the same control as the real TeleOp
+        // Gate, index, and intake: same as the match TeleOp
+        // HOLD left trigger = feed, HOLD B = gate in reverse, HOLD left bumper = index in reverse
         if (gamepad2.left_trigger > 0) {
             shooter.gateSetPower(1);
             intake.setIndexPower(1);
             intake.setMotorPower(1);
+        } else if (gamepad2.b) {
+            shooter.gateSetPower(-1);
         } else {
             shooter.gateSetPower(0);
+        }
+        boolean indexReverse = gamepad2.left_bumper && !gamepad2.back;   // LB means "P down" while tuning
+        if (indexReverse) {
+            intake.setIndexPower(-1);
+        }
+        if (gamepad2.left_trigger <= 0 && !indexReverse) {
             intake.setIndexPower(0);
+        }
+        if (gamepad2.left_trigger <= 0) {
             intake.setMotorPower(0);
         }
 
-        // ===== PIDF tuning (gamepad2) - only after the shooting spot has been locked in! =====
+        // ===== PIDF tuning - only after the shooting spot has been locked in! =====
+        // Safety switch: the tuning buttons only work while BACK is held, so nobody tunes by accident.
+        // We check every button every loop (even when not tuning), so an old press can't count later.
+        boolean tuning = gamepad2.back;
+        boolean fUp = gamepad2.yWasPressed();
+        boolean fDown = gamepad2.xWasPressed();
+        boolean pUp = gamepad2.rightBumperWasPressed();
+        boolean pDown = gamepad2.leftBumperWasPressed();
+
         boolean pidfChanged = false;
-        if (gamepad2.yWasPressed()) {
+        if (tuning && fUp) {
             kF = kF + F_STEP;
             pidfChanged = true;
         }
-        if (gamepad2.xWasPressed()) {
+        if (tuning && fDown) {
             kF = Math.max(0, kF - F_STEP);
             pidfChanged = true;
         }
-        if (gamepad2.rightBumperWasPressed()) {
+        if (tuning && pUp) {
             kP = kP + P_STEP;
             pidfChanged = true;
         }
-        if (gamepad2.leftBumperWasPressed()) {
+        if (tuning && pDown) {
             kP = Math.max(0, kP - P_STEP);
             pidfChanged = true;
         }
@@ -193,15 +222,16 @@ public class ShooterValueTest extends OpMode {
                     shooterConstants.SHOOTER_MOTOR_VELOCITY_D, kF);
         }
 
-        telemetry.addLine("GP2: dpad up = GO   dpad down = STOP   hold LT = feed");
-        telemetry.addLine("GP2: B = reset Lowest/Highest   Y/X = F +/-   RB/LB = P +/-");
+        telemetry.addLine("GP2 (like match): hold RT = spin, hold LT = feed, hold A/B/LB = reverse");
+        telemetry.addLine("GP2 test: dpad up = GO, dpad down = STOP, dpad right = reset Lowest/Highest");
+        telemetry.addLine("GP2 tune: hold BACK + Y/X = F +/-, RB/LB = P +/-");
         telemetry.addData("Target", "%.0f", shooter.getTargetVelocity());
         telemetry.addData("Actual", "%.0f", actualVelocity);
         telemetry.addData("At speed?", atSpeed);
         telemetry.addData("Spin-up", spinUpResult);
         telemetry.addData("Lowest / Highest", "%.0f / %.0f", lowestVelocity, highestVelocity);
         telemetry.addData("P / F", "%.2f / %.2f   (copy into shooterConstants when done!)", kP, kF);
-        telemetry.addData("Battery at GO", "%.1f V", batteryAtGo);
+        telemetry.addData("Battery at start", "%.1f V", batteryAtStart);
 
         limelight.update();
         follower.manual(powers);
@@ -218,4 +248,23 @@ public class ShooterValueTest extends OpMode {
         telemetry.update();
     }
 
+    // Spin up to the test speed. If the shooter is stopped, also start the spin-up stopwatch.
+    private void startShooterTest(double actualVelocity) {
+        shooter.SetShooterVelocity(TEST_VELOCITY);
+        batteryAtStart = battery.getVoltage();
+        if (actualVelocity < STOPPED_VELOCITY) {
+            spinUpTimer.reset();
+            measuringSpinUp = true;
+            spinUpResult = "measuring...";
+        } else {
+            // A fair spin-up test has to start from a stopped shooter
+            spinUpResult = "not measured: STOP and wait for Actual = 0";
+        }
+    }
+
+    // Stop the shooter (the last spin-up result stays on screen so you can write it down)
+    private void stopShooter() {
+        shooter.SetShooterVelocity(0);
+        measuringSpinUp = false;
+    }
 }
