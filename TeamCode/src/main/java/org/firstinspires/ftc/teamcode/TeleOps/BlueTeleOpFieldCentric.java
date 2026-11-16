@@ -89,7 +89,7 @@ public class BlueTeleOpFieldCentric extends OpMode {
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1325);
+            shooter.SetShooterVelocity(1360);
         }
         else if (gamepad2.a) {
             shooter.SetShooterVelocity(-900);

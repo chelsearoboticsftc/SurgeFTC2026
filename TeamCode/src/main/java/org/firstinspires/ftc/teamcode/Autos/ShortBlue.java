@@ -25,7 +25,7 @@ public class ShortBlue extends OpMode {
     private final Pose start = poseFactory.of(132, 72, 180);
     private final Pose path1Start = poseFactory.of(132, 72, 180);
     private final Pose path1 = poseFactory.of(117, 72, 180);
-    public final Pose endpoint = poseFactory.of(129, 45, 180);
+    public final Pose endpoint = poseFactory.of(129, 25, 180);
 
 
     public Path path1() {

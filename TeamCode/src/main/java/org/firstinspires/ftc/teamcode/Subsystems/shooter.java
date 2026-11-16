@@ -34,6 +34,9 @@ public class shooter {
     public void init() {
 
     }
+    public double getShooterVelocity() {
+        return shooterMotor.getVelocity();
+    }
     public void gateSetPower(double power) {
         gate.setPower(power);
     }

@@ -28,8 +28,7 @@ public class ShooterValueTest extends OpMode {
     public void start(){
         follower.setPose(OpModeStorage.autonomousEndPose);
         follower.update();
-        flower.resetFlowerR();
-        flower.resetFlowerL();
+
     }
     @Override
     public void init() {
@@ -64,21 +63,16 @@ public class ShooterValueTest extends OpMode {
             shooter.SetShooterVelocity(velocityVar - 10);
             velocityVar = velocityVar - 10;
         }
-        if (gamepad1.leftBumperWasPressed()) {
-            flower.leftFlowerPosSwap(leftFlowerPos +.1);
-            leftFlowerPos = leftFlowerPos + 0.1;
+
+        if (gamepad1.right_bumper) {
+            intake.setMotorPower(1);
+          intake.setIndexPower(1);
+          shooter.gateSetPower(1);
         }
-        if (gamepad1.left_trigger > 0) {
-            flower.leftFlowerPosSwap(leftFlowerPos - 0.1);
-            leftFlowerPos = leftFlowerPos - 0.1;
-        }
-        if (gamepad1.right_trigger > 0) {
-            flower.rightFlowerPosSwap(rightFlowerPos - 0.1);
-            rightFlowerPos = rightFlowerPos - 0.1;
-        }
-        if (gamepad1.rightBumperWasPressed()) {
-            flower.rightFlowerPosSwap(rightFlowerPos + 0.1);
-            rightFlowerPos = rightFlowerPos + 0.1;
+        else {
+            intake.setMotorPower(0);
+            intake.setIndexPower(0);
+            shooter.gateSetPower(0);
         }
 
         limelight.update();
