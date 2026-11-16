@@ -44,18 +44,10 @@ public class shooter {
         return targetVelocity;
     }
 
-    /**
-     * Is the shooter close enough to the target speed to fire?
-     *
-     * TODO: write this! Return true only when:
-     *   - we actually asked for a speed (a stopped shooter is NOT "at speed"), and
-     *   - the real speed is within SHOOTER_MOTOR_VELOCITY_TOLERANCE of the target, either way.
-     * Hint: getVelocity(), getTargetVelocity(), Math.abs(...), shooterConstants.SHOOTER_MOTOR_VELOCITY_TOLERANCE
-     *
-     * Until this is written, "At speed?" and "Spin-up" in Shooter Value Test won't work.
-     */
     public boolean isAtSpeed() {
-        return false;
+        return getTargetVelocity() > 0
+        && Math.abs(getVelocity() - getTargetVelocity()) <= shooterConstants.SHOOTER_MOTOR_VELOCITY_TOLERANCE;
+
     }
 
     /** Change the velocity PIDF values while running (for tuning in Shooter Value Test). */
