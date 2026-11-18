@@ -59,6 +59,12 @@ public class manualTurretTest extends OpMode {
             shooter.SetShooterVelocity(gamepad2.right_stick_y * 300);
         }
 
+        if (gamepad2.left_bumper && shooter.isAtSpeed()) {
+            intake.setIndexPower(1);
+            intake.setMotorPower(1);
+            shooter.gateSetPower(1);
+        }
+
         limelight.update();
         follower.manual(powers);
         follower.update();
