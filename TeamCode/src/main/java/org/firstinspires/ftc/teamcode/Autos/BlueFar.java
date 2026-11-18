@@ -17,8 +17,10 @@ import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
+
 
 @Autonomous
 public class BlueFar extends OpMode {
@@ -26,6 +28,8 @@ public class BlueFar extends OpMode {
     private Follower follower;
     private shooter shooter;
     private Intake intake;
+    private static final double SHOOT_VELOCITY = 1500;
+    private static final long FEED_MS = 5000;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(85, 133, 90);
@@ -52,14 +56,17 @@ public class BlueFar extends OpMode {
     }
     private Command autoRoutine() {
         return sequential(
-                instant(()->shooter.SetShooterVelocity(1750)),
-                waitMs(1000),
-                instant(()->intake.setIndexPower(1)),
+                instant(() -> shooter.SetShooterVelocity(SHOOT_VELOCITY)),
+                waitUntil(shooter::isAtSpeed),
                 instant(()->shooter.gateSetPower(1)),
-                waitMs(5000),
+                instant(()->intake.setIndexPower(1)),
+                instant(()->intake.setMotorPower(1)),
+                instant(()->shooter.gateSetPower(1)),
+                waitMs(FEED_MS),
                 instant(()->shooter.gateSetPower(0)),
-                instant(()->shooter.SetShooterVelocity(0)),
                 instant(()->intake.setIndexPower(0)),
+                instant(()->intake.setMotorPower(0)),
+                instant(()->shooter.SetShooterVelocity(0)),
                 follow(follower,path1()),
                 follow(follower,path2()),
                 follow(follower,path3()),

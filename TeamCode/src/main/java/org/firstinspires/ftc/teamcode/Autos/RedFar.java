@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
-import com.pedropathing.api.Paths;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import static com.pedropathing.api.Paths.*;
 import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
@@ -17,8 +17,10 @@ import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
+
 
 @Autonomous
 public class RedFar extends OpMode {
@@ -26,55 +28,49 @@ public class RedFar extends OpMode {
     private Follower follower;
     private shooter shooter;
     private Intake intake;
+    private static final double SHOOT_VELOCITY = 1500;
+    private static final long FEED_MS = 5000;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(27, 132, 90);
-    private final Pose path1 = poseFactory.of(27, 18, 90);
-    private final Pose point2 = poseFactory.of(60, 18, 270);
-    private final Pose point3 = poseFactory.of(18, 18, 270);
-    private final Pose point4 = poseFactory.of(18, 99, 270);
-    public final Pose endpoint = poseFactory.of(9, 85, 270);
+    private final Pose start = poseFactory.of(85, 133, 90);
+    private final Pose path1 = poseFactory.of(80, 119, 90);
+    private final Pose point2 = poseFactory.of(120, 119,90);
+    private final Pose point3 = poseFactory.of(120, 45, 90);
+    public final Pose endpoint = poseFactory.of(130, 45, 90);
 
 
     public Path path1() {
-        return Paths.line(start, path1).linear(start, path1);
+        return line(start, path1).linear(start, path1);
     }
 
     public Path path2() {
-        return Paths.line(path1, point2).linear(path1, point2);
+        return line(path1, point2).linear(path1, point2);
     }
 
     public Path path3() {
-        return Paths.line(point2, point3).linear(point2, point3);
-    }
+        return line(point2, point3).linear(point2, point3);
 
-    public Path path4() {
-        return Paths.line(point3, point4).linear(point3, point4);
     }
-
-    public Path path5() {
-        return Paths.line(point4, endpoint).linear(point4, endpoint);
-    }    private Command autoRoutine() {
+    public Path path4(){
+        return line(point3, endpoint) .linear (point3, endpoint);
+    }
+    private Command autoRoutine() {
         return sequential(
-                waitMs(6000),
-                follow(follower,path1()),
-                waitMs(100),
-                follow(follower,path2()),
-                waitMs(100),
-                instant(()->shooter.SetShooterVelocity(1375)),
-                waitMs(1000),
-                instant(()->intake.setIndexPower(1)),
+                instant(() -> shooter.SetShooterVelocity(SHOOT_VELOCITY)),
+                waitUntil(shooter::isAtSpeed),
                 instant(()->shooter.gateSetPower(1)),
-                waitMs(5000),
-                instant(()->intake.setIndexPower(0)),
+                instant(()->intake.setIndexPower(1)),
+                instant(()->intake.setMotorPower(1)),
+                instant(()->shooter.gateSetPower(1)),
+                waitMs(FEED_MS),
                 instant(()->shooter.gateSetPower(0)),
+                instant(()->intake.setIndexPower(0)),
+                instant(()->intake.setMotorPower(0)),
                 instant(()->shooter.SetShooterVelocity(0)),
-                waitMs(100),
+                follow(follower,path1()),
+                follow(follower,path2()),
                 follow(follower,path3()),
-                waitMs(100),
-                follow(follower,path4()),
-                waitMs(100),
-                follow(follower,path5())
+                follow(follower,path4())
         );
     }
 

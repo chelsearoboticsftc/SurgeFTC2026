@@ -45,7 +45,7 @@ public class BlueAudienceWait extends OpMode {
         return sequential(
                 waitMs(10000),
                 instant(()->shooter.SetShooterVelocity(1375)),
-                waitMs(1000),
+                waitMs(5000),
                 instant(()->intake.setIndexPower(1)),
                 instant(()->shooter.gateSetPower(1)),
                 waitMs(5000),
