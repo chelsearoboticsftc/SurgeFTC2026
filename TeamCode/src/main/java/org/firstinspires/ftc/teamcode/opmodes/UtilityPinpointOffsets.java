@@ -36,7 +36,8 @@ public class UtilityPinpointOffsets extends LinearOpMode {
     // Encoder ticks per mm of wheel travel:
     //   goBILDA 4-bar odometry pod  = 19.89436789
     //   goBILDA swingarm pod        = 13.26291192
-    private static final double TICKS_PER_MM = 19.89436789;
+    // This robot uses swingarm pods (see podType in pedro/Constants.java).
+    private static final double TICKS_PER_MM = 13.26291192;
 
     // Flip these if the live ticks go the wrong way (X should rise pushing the robot
     // forward, Y should rise pushing the robot left).
