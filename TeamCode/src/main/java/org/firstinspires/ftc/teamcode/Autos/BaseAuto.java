@@ -60,7 +60,7 @@ public abstract class BaseAuto extends OpMode {
         }
         return factory.of(x,y,headingDegrees);
     }
-    private Command intakeOn() {
+    protected Command intakeOn() {
         return instant(()-> {
                 intake.setIntakeServoL(INTAKE_DOWN_POSITION);
                 intake.setMotorPower(1);
