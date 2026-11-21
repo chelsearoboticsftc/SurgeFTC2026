@@ -28,7 +28,7 @@ public class RedAudienceShootParkFar extends OpMode {
     private shooter shooter;
     private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
-    private static final double SHOOT_VELOCITY = 1625;
+    private static final double SHOOT_VELOCITY = 1600;
     private static final long SPIN_UP_TIMEOUT_MS = 1500;
     private static final long FEED_MS = 5000;
 

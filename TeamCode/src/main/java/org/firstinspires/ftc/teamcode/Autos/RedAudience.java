@@ -18,6 +18,7 @@ import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
@@ -28,12 +29,15 @@ public class RedAudience extends OpMode {
     private shooter shooter;
     private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
+    private static final double SHOOT_VELOCITY = 1600;
+    private static final long SPIN_UP_TIMEOUT_MS = 1500;
+    private static final long FEED_MS = 5000;
 
     private final Pose start = poseFactory.of(57, 9, 270);
     private final Pose path1 = poseFactory.of(57, 24, 270);
     private final Pose point2 = poseFactory.of(27, 24, 270);
-    private final Pose point3 = poseFactory.of(27, 99, 270);
-    public final Pose endpoint = poseFactory.of(9, 99, 270);
+    private final Pose point3 = poseFactory.of(27, 90, 270);
+    public final Pose endpoint = poseFactory.of(8, 90, 270);
 
 
     public Path path1() {
@@ -54,13 +58,16 @@ public class RedAudience extends OpMode {
 
     private Command autoRoutine() {
         return sequential(
-                instant(()->shooter.SetShooterVelocity(1375)),
-                waitMs(1000),
+                instant(() -> shooter.SetShooterVelocity(SHOOT_VELOCITY)),
+                waitUntil(shooter::isAtSpeed).raceWith(waitMs(SPIN_UP_TIMEOUT_MS)),
                 instant(()->shooter.gateSetPower(1)),
                 instant(()->intake.setIndexPower(1)),
-                waitMs(5000),
-                instant(()->intake.setIndexPower(0)),
+                instant(()->intake.setMotorPower(1)),
+                instant(()->shooter.gateSetPower(1)),
+                waitMs(FEED_MS),
                 instant(()->shooter.gateSetPower(0)),
+                instant(()->intake.setIndexPower(0)),
+                instant(()->intake.setMotorPower(0)),
                 instant(()->shooter.SetShooterVelocity(0)),
                 follow(follower,path1()),
                 waitMs(100),
