@@ -88,6 +88,13 @@ public abstract class BaseAuto extends OpMode {
                 leg = leg.constant(to);
                 break;
             case TANGENT:
+                // TODO: lastPose is wrong after a TANGENT leg.
+                // tangent() ignores headingDegrees: the robot ends the leg facing the way it
+                // drove (from -> to), not the heading we passed in. But lastPose (set above)
+                // still remembers headingDegrees, so the NEXT leg starts from a heading the
+                // robot doesn't really have. A LINEAR leg after this one would turn from the
+                // wrong angle. Fix: in this case, set lastPose's heading to the direction of
+                // travel from 'from' to 'to'. (It has to work for Red too.)
                 leg = leg.tangent();
                 break;
             case LINEAR:
