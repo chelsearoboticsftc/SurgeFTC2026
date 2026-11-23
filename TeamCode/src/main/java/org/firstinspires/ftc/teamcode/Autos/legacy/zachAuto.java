@@ -1,8 +1,5 @@
+//package org.firstinspires.ftc.teamcode.Autos.legacy;
 //
-//
-//package org.firstinspires.ftc.teamcode.Autos;
-//
-//import com.pedropathing.api.Paths;
 //import com.pedropathing.ivy.Command;
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -19,38 +16,52 @@
 //import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 //
 //@Autonomous
-//public class MackAuto extends OpMode {
+//public class zachAuto extends OpMode {
 //    private Follower follower;
 //    private final PoseFactory poseFactory = PoseFactory.degrees();
 //
-//    private final Pose startPose = poseFactory.of(21.1113, 6.8887, 90);
-//    private final Pose path1 = poseFactory.of(55, 7, 180);
-//    private final Pose point2 = poseFactory.of(55, 24, -90);
-//    private final Pose point3 = poseFactory.of(9, 24, 0);
-//    private final Pose point4 = poseFactory.of(9, 108, -90);
+//    private final Pose start = poseFactory.of(56, 8, 90);
+//    private final Pose point1 = poseFactory.of(11, 9, 178.727);
+//    private final Pose point2 = poseFactory.of(11, 132, 90);
+//    private final Pose point3 = poseFactory.of(58, 131, -1.2189);
+//    private final Pose point4 = poseFactory.of(5, 103, 169.0456);
+//    private final Pose point4Control1 = poseFactory.of(66, 91, 0);
+//    private final Pose point5 = poseFactory.of(7, 103, 0);
+//    private final Pose point6 = poseFactory.of(9, 103, 0);
 //
 //    public Path path1() {
-//        return Paths.line(startPose, path1).linear(startPose, path1);
+//        return line(start, point1).tangent();
 //    }
 //
 //    public Path path2() {
-//        return Paths.line(path1, point2).reverseTangent();
+//        return line(point1, point2).tangent();
 //    }
 //
 //    public Path path3() {
-//        return Paths.line(point2, point3).reverseTangent();
+//        return line(point2, point3).tangent();
 //    }
 //
 //    public Path path4() {
-//        return Paths.line(point3, point4).reverseTangent();
+//        return curve(point3, point4Control1, point4).tangent();
 //    }
+//
+//    public Path path5() {
+//        return line(point4, point5).tangent();
+//    }
+//
+//    public Path path6() {
+//        return line(point5, point6).tangent();
+//    }
+//
 //    private Command autoRoutine() {
 //        return sequential(
 //                follow(follower, path1()),
 //                // Add mechanism commands here.
 //                follow(follower, path2()),
 //                follow(follower, path3()),
-//                follow(follower, path4())
+//                follow(follower, path4()),
+//                follow(follower, path5()),
+//                follow(follower, path6())
 //        );
 //    }
 //
@@ -58,7 +69,7 @@
 //    public void init() {
 //        Scheduler.reset();
 //        follower = Constants.create(hardwareMap);
-//        follower.setPose(startPose);//sets the starting point of your Robot
+//        follower.setPose(start);//sets the starting point of your Robot
 //        follower.update();
 //    }
 //    @Override
@@ -79,4 +90,3 @@
 //
 //
 //}
-//

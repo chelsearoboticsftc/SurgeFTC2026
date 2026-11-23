@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode.Autos.legacy;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -20,6 +22,7 @@ import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+@Disabled
 @Autonomous
 public class BlueAudienceWait extends OpMode {
     //shoot once

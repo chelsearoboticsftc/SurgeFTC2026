@@ -1,4 +1,4 @@
-//package org.firstinspires.ftc.teamcode.Autos;
+//package org.firstinspires.ftc.teamcode.Autos.legacy;
 //
 //import static com.pedropathing.api.Paths.*;
 //
@@ -15,31 +15,27 @@
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //
-//import org.firstinspires.ftc.teamcode.OpModeStorage;
 //import org.firstinspires.ftc.teamcode.pedro.Constants;
 //
-//@Autonomous(name = "Autotest", group = "Autonomous")
-//public class Autotest extends LinearOpMode {
+//@Autonomous(name = "AutoPath", group = "Autonomous")
+//public class tangentialTest extends LinearOpMode {
 //
 //    private Follower follower;
 //
 //    private final PoseFactory poseFactory = PoseFactory.degrees();
 //
-//    private final Pose start = poseFactory.of(61.2985, 12.0518, 180);
-//    private final Pose path1Start = poseFactory.of(61.2985, 12.0518, 180);
-//    private final Pose path1 = poseFactory.of(19.8458, 12.6244, 180);
-//    private final Pose point2 = poseFactory.of(20.5195, 37.5164, 180);
-//    private final Pose point3 = poseFactory.of(62.0738, 37.3928, 180);
-//    private final Pose point4 = poseFactory.of(61.5385, 11.6087, 180);
+//    private final Pose start = poseFactory.of(56, 8, 90);
+//    private final Pose path1 = poseFactory.of(56, 36, 90);
+//    private final Pose point2 = poseFactory.of(20.1068, 35.5595, -179.2968);
+//    private final Pose point3 = poseFactory.of(19.4714, 8.3414, -91.3374);
 //
 //    // Autonomous routine
 //    public Command autoRoutine() {
 //        return sequential(
 //                follow(follower, path1()),
-//                // other commands here
+//                //other commands would go here
 //                follow(follower, path2()),
-//                follow(follower, path3()),
-//                follow(follower, path4())
+//                follow(follower, path3())
 //        );
 //    }
 //
@@ -71,21 +67,14 @@
 //    }
 //
 //    public Path path1() {
-//        return line(path1Start, path1).linear(path1Start, path1);
+//        return line(start, path1).tangent();
 //    }
 //
 //    public Path path2() {
-//        return line(path1, point2).linear(path1, point2);
+//        return line(path1, point2).tangent();
 //    }
 //
 //    public Path path3() {
-//        return line(point2, point3).linear(point2, point3);
+//        return line(point2, point3).tangent();
 //    }
-//
-//    public Path path4() {
-//        return line(point3, point4).linear(point3, point4);
-//    }
-//
-//
 //}
-//

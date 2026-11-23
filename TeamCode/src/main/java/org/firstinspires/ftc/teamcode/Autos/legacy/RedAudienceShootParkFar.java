@@ -1,5 +1,8 @@
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode.Autos.legacy;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+import com.pedropathing.api.Paths;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -21,43 +24,45 @@ import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
-
+@Disabled
 @Autonomous
-public class RedFar extends OpMode {
-    //shoot once
+public class RedAudienceShootParkFar extends OpMode {
     private Follower follower;
     private shooter shooter;
     private Intake intake;
-    private static final double SHOOT_VELOCITY = 1500;
-    private static final long FEED_MS = 5000;
     private final PoseFactory poseFactory = PoseFactory.degrees();
+    private static final double SHOOT_VELOCITY = 1600;
+    private static final long SPIN_UP_TIMEOUT_MS = 1500;
+    private static final long FEED_MS = 5000;
 
-    private final Pose start = poseFactory.of(85, 133, 90);
-    private final Pose path1 = poseFactory.of(80, 119, 90);
-    private final Pose point2 = poseFactory.of(120, 119,90);
-    private final Pose point3 = poseFactory.of(120, 45, 90);
-    public final Pose endpoint = poseFactory.of(130, 45, 90);
-
+    private final Pose start = poseFactory.of(55.75, 7.75, 90);
+    private final Pose path1 = poseFactory.of(55.75, 19.75, 90);
+    private final Pose point2Start = poseFactory.of(55.75, 19.75, 90);
+    private final Pose point2 = poseFactory.of(31.75, 19.75, 90);
+    private final Pose point3Start = poseFactory.of(31.75, 19.75, 90);
+    private final Pose point3 = poseFactory.of(31.75, 118.75, 90);
+    private final Pose point4Start = poseFactory.of(31.75, 118.75, 90);
+    private final Pose point4 = poseFactory.of(10.75, 118.75, 90);
 
     public Path path1() {
-        return line(start, path1).linear(start, path1);
+        return Paths.line(start, path1).linear(start, path1);
     }
 
     public Path path2() {
-        return line(path1, point2).linear(path1, point2);
+        return Paths.line(point2Start, point2).linear(point2Start, point2);
     }
 
     public Path path3() {
-        return line(point2, point3).linear(point2, point3);
-
+        return Paths.line(point3Start, point3).linear(point3Start, point3);
     }
-    public Path path4(){
-        return line(point3, endpoint) .linear (point3, endpoint);
+
+    public Path path4() {
+        return Paths.line(point4Start, point4).linear(point4Start, point4);
     }
     private Command autoRoutine() {
         return sequential(
                 instant(() -> shooter.SetShooterVelocity(SHOOT_VELOCITY)),
-                waitUntil(shooter::isAtSpeed),
+                waitUntil(shooter::isAtSpeed).raceWith(waitMs(SPIN_UP_TIMEOUT_MS)),
                 instant(()->shooter.gateSetPower(1)),
                 instant(()->intake.setIndexPower(1)),
                 instant(()->intake.setMotorPower(1)),
@@ -80,9 +85,6 @@ public class RedFar extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);//sets the starting point of your Robot
         follower.update();
-        shooter = new shooter(hardwareMap);
-        intake = new Intake(hardwareMap);
-        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

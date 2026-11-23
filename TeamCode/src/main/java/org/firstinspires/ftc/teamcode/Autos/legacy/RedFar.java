@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode.Autos.legacy;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -22,8 +24,9 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 
+@Disabled
 @Autonomous
-public class BlueFar extends OpMode {
+public class RedFar extends OpMode {
     //shoot once
     private Follower follower;
     private shooter shooter;

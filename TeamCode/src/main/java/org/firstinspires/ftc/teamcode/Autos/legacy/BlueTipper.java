@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode.Autos.legacy;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
@@ -22,6 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
+@Disabled
 @Autonomous(name="Blue Tipper", group="Blue")
 public class BlueTipper extends OpMode {
     //shoot once

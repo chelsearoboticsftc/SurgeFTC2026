@@ -1,4 +1,4 @@
-//package org.firstinspires.ftc.teamcode.Autos;
+//package org.firstinspires.ftc.teamcode.Autos.legacy;
 //
 //import com.pedropathing.ivy.Command;
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;

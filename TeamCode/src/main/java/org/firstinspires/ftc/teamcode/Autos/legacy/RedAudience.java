@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode.Autos.legacy;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import com.pedropathing.api.Paths;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import static com.pedropathing.api.Paths.*;
 import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.ivy.Scheduler;
+
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
@@ -22,8 +24,10 @@ import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+@Disabled
 @Autonomous
-public class RedAudienceShootParkFar extends OpMode {
+public class RedAudience extends OpMode {
+    //shoot once 
     private Follower follower;
     private shooter shooter;
     private Intake intake;
@@ -32,30 +36,29 @@ public class RedAudienceShootParkFar extends OpMode {
     private static final long SPIN_UP_TIMEOUT_MS = 1500;
     private static final long FEED_MS = 5000;
 
-    private final Pose start = poseFactory.of(55.75, 7.75, 90);
-    private final Pose path1 = poseFactory.of(55.75, 19.75, 90);
-    private final Pose point2Start = poseFactory.of(55.75, 19.75, 90);
-    private final Pose point2 = poseFactory.of(31.75, 19.75, 90);
-    private final Pose point3Start = poseFactory.of(31.75, 19.75, 90);
-    private final Pose point3 = poseFactory.of(31.75, 118.75, 90);
-    private final Pose point4Start = poseFactory.of(31.75, 118.75, 90);
-    private final Pose point4 = poseFactory.of(10.75, 118.75, 90);
+    private final Pose start = poseFactory.of(57, 9, 270);
+    private final Pose path1 = poseFactory.of(57, 24, 270);
+    private final Pose point2 = poseFactory.of(27, 24, 270);
+    private final Pose point3 = poseFactory.of(27, 90, 270);
+    public final Pose endpoint = poseFactory.of(8, 90, 270);
+
 
     public Path path1() {
         return Paths.line(start, path1).linear(start, path1);
     }
 
     public Path path2() {
-        return Paths.line(point2Start, point2).linear(point2Start, point2);
+        return Paths.line(path1, point2).linear(path1, point2);
     }
 
     public Path path3() {
-        return Paths.line(point3Start, point3).linear(point3Start, point3);
+        return Paths.line(point2, point3).linear(point2, point3);
     }
 
     public Path path4() {
-        return Paths.line(point4Start, point4).linear(point4Start, point4);
+        return Paths.line(point3, endpoint).linear(point3, endpoint);
     }
+
     private Command autoRoutine() {
         return sequential(
                 instant(() -> shooter.SetShooterVelocity(SHOOT_VELOCITY)),
@@ -70,8 +73,11 @@ public class RedAudienceShootParkFar extends OpMode {
                 instant(()->intake.setMotorPower(0)),
                 instant(()->shooter.SetShooterVelocity(0)),
                 follow(follower,path1()),
+                waitMs(100),
                 follow(follower,path2()),
+                waitMs(100),
                 follow(follower,path3()),
+                waitMs(100),
                 follow(follower,path4())
         );
     }
@@ -80,8 +86,11 @@ public class RedAudienceShootParkFar extends OpMode {
     public void init() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
-        follower.setPose(start);//sets the starting point of your Robot
+        follower.setPose(start);
         follower.update();
+        intake = new Intake(hardwareMap);
+        shooter = new shooter(hardwareMap);
+        OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override
     public void start() {

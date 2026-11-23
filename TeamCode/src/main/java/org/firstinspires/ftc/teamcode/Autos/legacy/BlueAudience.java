@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode.Autos.legacy;
 
-import com.pedropathing.api.Paths;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import static com.pedropathing.api.Paths.*;
 import com.pedropathing.paths.Path;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import com.pedropathing.follower.Follower;
@@ -14,68 +16,73 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.ivy.Scheduler;
-
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
-import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+@Disabled
 @Autonomous
-public class RedAudience extends OpMode {
-    //shoot once 
+public class BlueAudience extends OpMode {
     private Follower follower;
-    private shooter shooter;
     private Intake intake;
+    private shooter shooter;
     private final PoseFactory poseFactory = PoseFactory.degrees();
-    private static final double SHOOT_VELOCITY = 1600;
-    private static final long SPIN_UP_TIMEOUT_MS = 1500;
-    private static final long FEED_MS = 5000;
 
-    private final Pose start = poseFactory.of(57, 9, 270);
-    private final Pose path1 = poseFactory.of(57, 24, 270);
-    private final Pose point2 = poseFactory.of(27, 24, 270);
-    private final Pose point3 = poseFactory.of(27, 90, 270);
-    public final Pose endpoint = poseFactory.of(8, 90, 270);
-
+    private final Pose start = poseFactory.of(80, 8, 90);
+    private final Pose path1 = poseFactory.of(80, 32, 90);
+    private final Pose point2 = poseFactory.of(117, 32, 90);
+    private final Pose point3 = poseFactory.of(117, 133, 90);
+    private final Pose point4 = poseFactory.of(90, 133, 90);
+    private final Pose point5 = poseFactory.of(117, 133, 90);
+    private final Pose point6 = poseFactory.of(117, 32, 90);
+    private final Pose endpoint = poseFactory.of(131, 32, 90);
 
     public Path path1() {
-        return Paths.line(start, path1).linear(start, path1);
+        return line(start, path1).linear(start, path1);
     }
 
     public Path path2() {
-        return Paths.line(path1, point2).linear(path1, point2);
+        return line(path1, point2).linear(path1, point2);
     }
 
     public Path path3() {
-        return Paths.line(point2, point3).linear(point2, point3);
+        return line(point2, point3).linear(point2, point3);
     }
 
     public Path path4() {
-        return Paths.line(point3, endpoint).linear(point3, endpoint);
+        return line(point3, point4).linear(point3, point4);
     }
 
+    public Path path5() {
+        return line(point4, point5).linear(point4, point5);
+    }
+
+    public Path path6() {
+        return line(point5, point6).linear(point5, point6);
+    }
+
+    public Path path7() {
+        return line(point6, endpoint).linear(point6, endpoint);
+    }
     private Command autoRoutine() {
         return sequential(
-                instant(() -> shooter.SetShooterVelocity(SHOOT_VELOCITY)),
-                waitUntil(shooter::isAtSpeed).raceWith(waitMs(SPIN_UP_TIMEOUT_MS)),
+                follow(follower, path1()),
+                follow(follower, path2()),
+                follow(follower, path3()),
+                follow(follower, path4()),
+                instant(()->shooter.SetShooterVelocity(1375)),
+                waitMs(1000),
                 instant(()->shooter.gateSetPower(1)),
                 instant(()->intake.setIndexPower(1)),
-                instant(()->intake.setMotorPower(1)),
-                instant(()->shooter.gateSetPower(1)),
-                waitMs(FEED_MS),
+                waitMs(5000),
+                instant(()->shooter.SetShooterVelocity(0)),
                 instant(()->shooter.gateSetPower(0)),
                 instant(()->intake.setIndexPower(0)),
-                instant(()->intake.setMotorPower(0)),
-                instant(()->shooter.SetShooterVelocity(0)),
-                follow(follower,path1()),
-                waitMs(100),
-                follow(follower,path2()),
-                waitMs(100),
-                follow(follower,path3()),
-                waitMs(100),
-                follow(follower,path4())
+                follow(follower, path5()),
+                follow(follower, path6()),
+                follow(follower, path7())
         );
     }
 
@@ -85,8 +92,8 @@ public class RedAudience extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();
-        intake = new Intake(hardwareMap);
         shooter = new shooter(hardwareMap);
+        intake = new Intake(hardwareMap);
         OpModeStorage.autonomousEndPose = endpoint;
     }
     @Override

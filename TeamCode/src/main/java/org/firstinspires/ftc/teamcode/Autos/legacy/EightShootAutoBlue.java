@@ -1,4 +1,4 @@
-//package org.firstinspires.ftc.teamcode.Autos;
+//package org.firstinspires.ftc.teamcode.Autos.legacy;
 //
 //import static com.pedropathing.api.Paths.line;
 //import static com.pedropathing.ivy.Scheduler.schedule;
