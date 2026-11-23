@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autos.legacy;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import com.pedropathing.api.Paths;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -17,6 +19,7 @@ import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+@Disabled
 @Autonomous
 public class ShortBlue extends OpMode {
     private Follower follower;
