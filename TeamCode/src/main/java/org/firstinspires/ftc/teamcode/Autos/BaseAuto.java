@@ -146,6 +146,13 @@ public abstract class BaseAuto extends OpMode {
             }
         );
     }
+    private Command flower(){
+        return instant(() -> {
+                    flower.flowerToggle();
+                }
+        );
+    }
+
     @Override
     public void init() {
         Scheduler.reset();
