@@ -23,6 +23,11 @@ import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+import static org.firstinspires.ftc.teamcode.Subsystems.FlowerConstants.flowerDownL;
+import static org.firstinspires.ftc.teamcode.Subsystems.FlowerConstants.flowerDownR;
+import static org.firstinspires.ftc.teamcode.Subsystems.FlowerConstants.flowerUpL;
+import static org.firstinspires.ftc.teamcode.Subsystems.FlowerConstants.flowerUpR;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +143,7 @@ public abstract class BaseAuto extends OpMode {
                 instant(()->shooter.SetShooterVelocity(0))
         );
     }
-    private Command feed(double power) {
+    protected Command feed(double power) {
         return instant(() -> {
                 shooter.gateSetPower(power);
                 intake.setMotorPower(power);
@@ -146,19 +151,24 @@ public abstract class BaseAuto extends OpMode {
             }
         );
     }
-    private Command flower(){
+    protected Command flowerUp(){
         return instant(() -> {
-                    flower.flowerToggle();
+            flowerUp();
+                }
+        );
+    } protected Command flowerDown(){
+        return instant(() -> {
+            flowerDown();
                 }
         );
     }
-
     @Override
     public void init() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
         shooter = new shooter(hardwareMap);
         intake = new Intake(hardwareMap);
+        flower =new Flower(hardwareMap);
         startPose = startPos();
         lastPose = startPose;   // the first driveTo starts from the start
         List<Command> plan = steps();
