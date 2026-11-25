@@ -1,23 +1,18 @@
-
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.pedropathing.math.Pose;
 
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.*;
 
 public class Turret {
 
-    private CRServo turretA;
-    private CRServo turretB;
-
-    private DcMotorEx turretEncoder;
+    private final ServoImplEx turretA;
+    private final ServoImplEx turretB;
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -25,17 +20,16 @@ public class Turret {
     // STATE
     // =====================================
 
+    // Where the target is (robot-relative, wrapped).
     private double targetRad = 0;
 
-    private double encoderZero = 0;
+    // Turret angle we are currently commanding (unwrapped, within limits).
+    private double commandRad = 0;
 
-    private double lastAngle = 0;
-
-    private double filteredVelocity = 0;
+    // Modeled turret angle (servos have no feedback).
+    private double estimatedRad = 0;
 
     private double ffRate = 0;
-
-    private double lastU = 0;
 
     private double lastError = Math.PI;
 
@@ -48,75 +42,36 @@ public class Turret {
     // =====================================
 
     public Turret(HardwareMap hardwareMap) {
-        this(hardwareMap, true);
-    }
 
-    public Turret(HardwareMap hardwareMap, boolean resetEncoder) {
+        turretA = hardwareMap.get(ServoImplEx.class, SERVO_A);
+        turretB = hardwareMap.get(ServoImplEx.class, SERVO_B);
 
-        turretA = hardwareMap.get(
-                CRServo.class,
-                SERVO_A
-        );
+        // REV Smart Robot Servo uses the full 500-2500 us range.
+        PwmControl.PwmRange range =
+                new PwmControl.PwmRange(SERVO_PWM_MIN_US, SERVO_PWM_MAX_US);
 
-        turretB = hardwareMap.get(
-                CRServo.class,
-                SERVO_B
-        );
+        turretA.setPwmRange(range);
+        turretB.setPwmRange(range);
 
-        turretEncoder = hardwareMap.get(
-                DcMotorEx.class,
-                ENCODER_NAME
-        );
-
-        if (resetEncoder) {
-            turretEncoder.setMode(
-                    DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            );
-        }
-
-        turretEncoder.setMode(
-                DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        );
-
-        encoderZero = turretEncoder.getCurrentPosition();
-
-        lastAngle = TurretRadians();
+        // Start facing forward.
+        commandRad = 0;
+        estimatedRad = 0;
+        writeServos(0);
 
         timer.reset();
     }
 
     // =====================================
-    // ENCODER
+    // ANGLE
     // =====================================
 
-    public double getTurretEncoder() {
-        return turretEncoder.getCurrentPosition();
-    }
-
+    // Estimated turret angle (unwrapped).
     public double TurretRadians() {
-
-        double counts =
-                turretEncoder.getCurrentPosition() - encoderZero;
-
-        double radians =
-                (counts / ENCODER_CPR)
-                        * (2.0 * Math.PI / GEAR_RATIO);
-
-        return ENCODER_REVERSED ? -radians : radians;
+        return estimatedRad;
     }
 
     public double getAngleRadians() {
-        return wrap(TurretRadians());
-    }
-
-    // Call when turret is physically facing forward.
-    public void calibrateTurretZero() {
-
-        encoderZero = turretEncoder.getCurrentPosition();
-
-        lastAngle = 0;
-
-        filteredVelocity = 0;
+        return wrap(estimatedRad);
     }
 
     // =====================================
@@ -285,10 +240,64 @@ public class Turret {
     }
 
     // =====================================
-    // PID CONTROL
+    // POSITION CONTROL
     // =====================================
 
     private void run() {
+
+        double dt = tick();
+
+        // Lead the target slightly to hide servo lag.
+        double predicted = wrap(targetRad + ffRate * LEAD_TIME_SEC);
+
+        double target = chooseTarget(predicted, commandRad);
+
+        commandRad = target;
+
+        writeServos(commandRad);
+
+        updateEstimate(dt);
+
+        lastError = Math.abs(commandRad - estimatedRad);
+    }
+
+    // Manual jog: power -1..1 moves the commanded angle.
+    public void turnTurret(double power) {
+
+        double dt = tick();
+
+        power = clamp(power, -1, 1);
+
+        commandRad = clamp(
+                commandRad + power * JOG_SPEED_RAD_PER_SEC * dt,
+                -MAX_TURRET_ANGLE_RAD,
+                MAX_TURRET_ANGLE_RAD
+        );
+
+        ffRate = 0;
+
+        writeServos(commandRad);
+
+        updateEstimate(dt);
+
+        lastError = Math.abs(commandRad - estimatedRad);
+    }
+
+    // Servos hold position on their own, so stop just freezes the command.
+    public void stop() {
+
+        double dt = tick();
+
+        ffRate = 0;
+
+        writeServos(commandRad);
+
+        updateEstimate(dt);
+
+        lastError = Math.abs(commandRad - estimatedRad);
+    }
+
+    private double tick() {
 
         double dt = Math.max(
                 0.001,
@@ -297,73 +306,30 @@ public class Turret {
 
         timer.reset();
 
-        double angle = TurretRadians();
+        return dt;
+    }
 
-        double target = chooseTarget(
-                targetRad,
-                angle
+    // Model the servo travelling toward the command at its max speed.
+    private void updateEstimate(double dt) {
+
+        double step = SERVO_SPEED_RAD_PER_SEC * dt;
+
+        estimatedRad += clamp(
+                commandRad - estimatedRad,
+                -step,
+                step
         );
-
-        double error = target - angle;
-
-        lastError = Math.abs(error);
-
-        // Measure turret angular velocity.
-        double measuredVelocity =
-                (angle - lastAngle) / dt;
-
-        lastAngle = angle;
-
-        // Filter encoder velocity.
-        filteredVelocity =
-                D_FILTER * filteredVelocity
-                        + (1.0 - D_FILTER) * measuredVelocity;
-
-        double u = 0;
-
-        if (Math.abs(error) > HOLD_TOL_RAD) {
-
-            double p = kP * error;
-
-            // Derivative on measurement.
-            double d = -kD * filteredVelocity;
-
-            // Static friction compensation.
-            double s = kS * clamp(error / Math.toRadians(3), -1, 1);;
-
-            // Robot motion compensation.
-            double ff = kV_HEADING * ffRate;
-
-            u = p + d + s + ff;
-        }
-
-        u = clamp(
-                u,
-                -MAX_POWER,
-                MAX_POWER
-        );
-
-        // Limit sudden power changes.
-        double maxChange = MAX_ACCEL * dt;
-
-        u = clamp(
-                u,
-                lastU - maxChange,
-                lastU + maxChange
-        );
-
-        lastU = u;
-
-        setTurretPower(u);
     }
 
     // =====================================
     // CABLE LIMITS
     // =====================================
 
+    // Picks the equivalent angle (target +/- 360) that is within travel
+    // and closest to where the turret already is.
     private double chooseTarget(
             double wrappedTarget,
-            double angle
+            double current
     ) {
 
         double best = Double.NaN;
@@ -375,12 +341,12 @@ public class Turret {
             double candidate =
                     wrappedTarget + k * 2 * Math.PI;
 
-            if (Math.abs(candidate) > CABLE_LIMIT_RAD) {
+            if (Math.abs(candidate) > MAX_TURRET_ANGLE_RAD) {
                 continue;
             }
 
             double distance =
-                    Math.abs(candidate - angle);
+                    Math.abs(candidate - current);
 
             if (distance < bestDistance) {
 
@@ -396,8 +362,8 @@ public class Turret {
 
             return clamp(
                     wrappedTarget,
-                    -CABLE_LIMIT_RAD,
-                    CABLE_LIMIT_RAD
+                    -MAX_TURRET_ANGLE_RAD,
+                    MAX_TURRET_ANGLE_RAD
             );
         }
 
@@ -408,29 +374,23 @@ public class Turret {
     // SERVO OUTPUT
     // =====================================
 
-    private void setTurretPower(double power) {
+    private double angleToServoPosition(double turretRad) {
 
-        turretA.setPower(power);
+        double dir = TURRET_REVERSED ? -1.0 : 1.0;
 
-        turretB.setPower(
-                SERVO_B_REVERSED ? -power : power
-        );
+        double pos =
+                0.5 + dir * (turretRad - ZERO_OFFSET_RAD) / TURRET_TRAVEL_RAD;
+
+        return clamp(pos, 0.0, 1.0);
     }
 
-    public void turnTurret(double power) {
+    private void writeServos(double turretRad) {
 
-        power = clamp(power, -MAX_POWER, MAX_POWER);
+        double pos = angleToServoPosition(turretRad);
 
-        setTurretPower(power);
+        turretA.setPosition(SERVO_A_REVERSED ? 1.0 - pos : pos);
 
-        lastU = power;
-    }
-
-    public void stop() {
-
-        setTurretPower(0);
-
-        lastU = 0;
+        turretB.setPosition(SERVO_B_REVERSED ? 1.0 - pos : pos);
     }
 
     // =====================================
@@ -441,16 +401,16 @@ public class Turret {
         return targetRad;
     }
 
-    public double getLastU() {
-        return lastU;
+    public double getCommandRad() {
+        return commandRad;
+    }
+
+    public double getServoPosition() {
+        return angleToServoPosition(commandRad);
     }
 
     public double getErrorRadians() {
         return lastError;
-    }
-
-    public double getVelocity() {
-        return filteredVelocity;
     }
 
     public double getFeedforwardRate() {

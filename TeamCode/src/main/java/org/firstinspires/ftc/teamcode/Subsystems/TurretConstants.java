@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.pedropathing.math.Pose;
@@ -16,54 +15,50 @@ public class TurretConstants {
 
     public static final String SERVO_A = "TurretA";
     public static final String SERVO_B = "TurretB";
-    public static final String ENCODER_NAME = "intakeMotor";
 
-    // Set true if servo B needs opposite power.
+    // Flip a servo's position (1 - pos) if it moves the wrong way.
+    // Both servos should push the turret the same direction.
+    public static final boolean SERVO_A_REVERSED = false;
     public static final boolean SERVO_B_REVERSED = false;
 
-    // =====================================
-    // ENCODER
-    // =====================================
-
-    public static final double ENCODER_CPR = 8192.0;
-
-    // Encoder rotates 2.75 times per turret rotation.
-    public static final double GEAR_RATIO = 2.75;
-
-    public static final boolean ENCODER_REVERSED = true;
+    // Set true if increasing turret angle (CCW) needs LOWER servo position.
+    public static final boolean TURRET_REVERSED = false;
 
     // =====================================
-    // PID
+    // SERVO RANGE
     // =====================================
 
-    public static final double kP = 1.2;
-    public static final double kD = 0.05;
-    public static final double kS = 0.1;
-    public static final double kV_HEADING = 0.25;
+    // REV Smart Robot Servo in servo mode: 500-2500 us = 270 degrees.
+    public static final int SERVO_PWM_MIN_US = 500;
+    public static final int SERVO_PWM_MAX_US = 2500;
+
+    // Total turret rotation for the full 0..1 servo range.
+    // (270 deg servo * 4 / 2.75 = ~392.7 deg)
+    public static final double TURRET_TRAVEL_RAD =
+            Math.toRadians(393);
+
+    // Turret angle when the servos are at position 0.5.
+    // Adjust if the turret doesn't face forward at center.
+    public static final double ZERO_OFFSET_RAD = 0;
+
+    // Stay slightly off the physical end stops.
+    public static final double MAX_TURRET_ANGLE_RAD =
+            TURRET_TRAVEL_RAD / 2.0 - Math.toRadians(2);
 
     // =====================================
-    // FILTERING
+    // TRACKING
     // =====================================
 
-    public static final double D_FILTER = 0.75;
+    // Aim ahead by this many seconds of target motion (0 = off).
+    public static final double LEAD_TIME_SEC = 0.0;
 
-    // =====================================
-    // POWER LIMITS
-    // =====================================
+    // Estimated turret speed, used only for isOnTarget().
+    // Placeholder, so measure it on the robot and update.
+    public static final double SERVO_SPEED_RAD_PER_SEC = 8.0;
 
-    public static final double MAX_POWER = 1;
-    public static final double MAX_ACCEL = 6.0;
-
-
-    // =====================================
-    // ANGLE LIMITS
-    // =====================================
-
-    public static final double CABLE_LIMIT_RAD =
-            Math.toRadians(270);
-
-    public static final double HOLD_TOL_RAD =
-            Math.toRadians(0.25);
+    // Manual jog speed at full stick.
+    public static final double JOG_SPEED_RAD_PER_SEC =
+            Math.toRadians(120);
 
     public static final double ON_TARGET_TOL_RAD =
             Math.toRadians(2);
