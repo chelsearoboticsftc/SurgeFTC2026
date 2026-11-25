@@ -38,7 +38,7 @@ public class TeleOpFieldCentric extends OpMode {
         shooter = new shooter(hardwareMap);
         limelight = new Limelight(hardwareMap, telemetry);
         flower = new Flower(hardwareMap);
-        turret = new Turret(hardwareMap, true);
+        turret = new Turret(hardwareMap);
     }
     @Override
     public void loop() {
@@ -144,8 +144,8 @@ public class TeleOpFieldCentric extends OpMode {
         // =====================================
 
         telemetry.addData(
-                "Turret Encoder",
-                turret.getTurretEncoder()
+                "Turret Servo Position",
+                turret.getServoPosition()
         );
 
         telemetry.addData(
@@ -164,18 +164,13 @@ public class TeleOpFieldCentric extends OpMode {
         );
 
         telemetry.addData(
-                "Turret Velocity",
-                Math.toDegrees(turret.getVelocity())
+                "Turret Command",
+                Math.toDegrees(turret.getCommandRad())
         );
 
         telemetry.addData(
                 "Turret Feedforward",
                 turret.getFeedforwardRate()
-        );
-
-        telemetry.addData(
-                "Turret Power",
-                turret.getLastU()
         );
 
         telemetry.addData(
