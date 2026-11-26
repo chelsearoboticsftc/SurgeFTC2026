@@ -11,7 +11,10 @@ import com.pedropathing.follower.Follower;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Flower;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretConstants.Alliance;
 import org.firstinspires.ftc.teamcode.Subsystems.shooter;
+import com.pedropathing.math.Velocity;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
@@ -38,6 +41,7 @@ public abstract class BaseAuto extends OpMode {
     private shooter shooter;
     private Intake intake;
     private Flower flower;
+    private Turret turret;
     private Pose startPose;
     private Pose lastPose;
     private int stepCount;
@@ -56,6 +60,15 @@ public abstract class BaseAuto extends OpMode {
     protected abstract Pose startPos();
     protected abstract List<Command> steps();
     protected boolean isRed() {return false;}
+
+    /**
+     * The alliance as the Turret wants it. Comes from isRed(), so Red autos still just
+     * override isRed() and the two can never disagree.
+     */
+    protected final Alliance alliance() {
+        return isRed() ? Alliance.RED : Alliance.BLUE;
+    }
+
     protected double shooterVelocity() {return DEFAULT_SHOOTER_VELOCITY;}
 
     protected Pose pose(double x, double y, double headingDegrees) {
@@ -173,6 +186,7 @@ public abstract class BaseAuto extends OpMode {
         shooter = new shooter(hardwareMap);
         intake = new Intake(hardwareMap);
         flower =new Flower(hardwareMap);
+        turret = new Turret(hardwareMap);   // turns the turret to face forward
         startPose = startPos();
         lastPose = startPose;   // the first driveTo starts from the start
         List<Command> plan = steps();
@@ -183,6 +197,7 @@ public abstract class BaseAuto extends OpMode {
     }
     @Override
     public void init_loop() {
+        telemetry.addData("ALLIANCE", alliance());
         telemetry.addData(
             "START",
             "x=%.0f y=%.0f facing %.0f°",
@@ -204,7 +219,18 @@ public abstract class BaseAuto extends OpMode {
     @Override
     public void loop() {
         follower.update();
+
+        // Keep the turret pointed at our goal the whole auto, whatever the steps are doing.
+        // Same call as TeleOpFieldCentric. velocity() is field-relative, which aimAtGoal expects.
+        Pose robot = follower.pose();
+        Velocity v = follower.velocity();
+        turret.aimAtGoal(robot, v.omega, v.vx, v.vy, alliance());
+
         Scheduler.execute();
+
+        telemetry.addData("Turret on target", turret.isOnTarget());
+        telemetry.addData("Turret can reach goal", turret.isTargetReachable());
+        telemetry.update();
     }
 
     @Override
