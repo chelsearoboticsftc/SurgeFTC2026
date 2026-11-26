@@ -4,15 +4,11 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Autos.BaseAuto;
-
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-// Same route as the old ShortBlue (now in Autos/legacy): pull off the wall, wait, park.
 @Autonomous
-public class RedFarFinal extends BaseAuto {
+public class BlueAudienceFlower extends BaseAuto {
     @Override
     protected Pose startPos() {
         return pose(81.75, 8.75, 270);
