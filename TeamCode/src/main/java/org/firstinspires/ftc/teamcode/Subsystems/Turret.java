@@ -70,6 +70,11 @@ public class Turret {
         return estimatedRad;
     }
 
+    public void setTurretPos(double pos){
+        turretA.setPosition(pos);
+        turretB.setPosition(pos);
+    }
+
     public double getAngleRadians() {
         return wrap(estimatedRad);
     }

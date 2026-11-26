@@ -11,7 +11,7 @@ public class shooterConstants {
     // Starting guess (~3% of 1325). Set it from the wobble you measure in Shooter Value Test.
     public static final double SHOOTER_MOTOR_VELOCITY_TOLERANCE = 40;
     public static final DcMotor.ZeroPowerBehavior SHOOTER_MOTOR_ZERO_POWER_BEHAVIOR = DcMotor.ZeroPowerBehavior.BRAKE;
-    public static final DcMotorSimple.Direction SHOOTER_MOTOR_DIRECTION = DcMotorSimple.Direction.REVERSE;
+    public static final DcMotorSimple.Direction SHOOTER_MOTOR_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static final double SHOOTER_MOTOR_VELOCITY_P = 1.0;
     public static final double SHOOTER_MOTOR_VELOCITY_I = 0.0;
     public static final double SHOOTER_MOTOR_VELOCITY_D = 0.0;

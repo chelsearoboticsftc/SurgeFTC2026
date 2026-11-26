@@ -88,7 +88,7 @@ public class TeleOpFieldCentric extends OpMode {
 
         //Shooter controls
         if (gamepad2.right_trigger > 0){
-            shooter.SetShooterVelocity(1325);
+            shooter.SetShooterVelocity(1500);
         }
         else if (gamepad2.a) {
             shooter.SetShooterVelocity(-900);
@@ -107,6 +107,9 @@ public class TeleOpFieldCentric extends OpMode {
 //            intake.setIntakeServoL(1);
 //            intakeToggleVar = false;
 //        }
+        if(gamepad1.xWasPressed()){
+            turret.setTurretPos(.5);
+        }
 
         //Flower controls
         if (gamepad1.aWasPressed()) {
@@ -125,17 +128,17 @@ public class TeleOpFieldCentric extends OpMode {
         follower.manual(powers);
         follower.update();
         Pose robotPose = follower.pose();
-//        turret.aimAtGoal(
-//                robotPose,
-//
-//                follower.velocity().omega,
-//
-//                follower.velocity().vx,
-//
-//                follower.velocity().vy,
-//
-//                TurretConstants.Alliance.RED
-//        );// returns a Pose object
+        turret.aimAtGoal(
+                robotPose,
+
+                follower.velocity().omega,
+
+                follower.velocity().vx,
+
+                follower.velocity().vy,
+
+                TurretConstants.Alliance.RED
+        );// returns a Pose object
         telemetry.addData("Robot X", robotPose.x());
         telemetry.addData("Robot Y", robotPose.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
