@@ -151,16 +151,20 @@ public abstract class BaseAuto extends OpMode {
             }
         );
     }
-    protected Command flowerUp(){
+    /** Raise both flower servos. Sets the positions directly, so it works no matter where they were. */
+    protected Command flowerUp() {
         return instant(() -> {
-            flowerUp();
-                }
-        );
-    } protected Command flowerDown(){
+            flower.rightFlowerPosSwap(flowerUpR);
+            flower.leftFlowerPosSwap(flowerUpL);
+        });
+    }
+
+    /** Lower both flower servos. */
+    protected Command flowerDown() {
         return instant(() -> {
-            flowerDown();
-                }
-        );
+            flower.rightFlowerPosSwap(flowerDownR);
+            flower.leftFlowerPosSwap(flowerDownL);
+        });
     }
     @Override
     public void init() {
